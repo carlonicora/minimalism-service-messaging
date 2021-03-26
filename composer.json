@@ -1,0 +1,34 @@
+{
+  "name": "carlonicora/minimalism-service-messaging",
+  "description": "Messaging service for minimalism",
+  "version": "1.0.0",
+  "homepage": "https://carlonicora.com",
+  "time": "2021-03-25",
+  "license": "MIT",
+  "type": "library",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Carlo Nicora",
+      "email": "carlo@carlonicora.com",
+      "homepage": "http://carlonicora.com",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "CarloNicora\\Minimalism\\Services\\Messaging\\":"src/"
+    }
+  },
+  "require": {
+    "php": ">=8.0",
+    "ext-json": "*",
+    "ext-mysqli": "*",
+    "ext-redis": "*",
+    "carlonicora/jsonapi": "~3.0",
+    "carlonicora/minimalism": "~12.5",
+    "carlonicora/minimalism-service-mysql": "~4.2",
+    "carlonicora/minimalism-service-builder": "~1.0",
+    "carlonicora/minimalism-service-cacher": "~3.1"
+  }
+}
