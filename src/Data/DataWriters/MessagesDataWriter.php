@@ -1,11 +1,12 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\DataWriters;
 
-use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingLoader;
+use CarloNicora\Minimalism\Abstracts\AbstractLoader;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\DeletedMessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\MessagesTable;
+use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ParticipantsTable;
 
-class MessagesDataWriter extends AbstractMessagingLoader
+class MessagesDataWriter extends AbstractLoader
 {
     /**
      * @param int $userIdSender
@@ -28,6 +29,13 @@ class MessagesDataWriter extends AbstractMessagingLoader
         $message = $this->data->insert(
             tableInterfaceClassName: MessagesTable::class,
             records: $message
+        );
+
+        /** @see ParticipantsTable::updateThreadUnarchived() */
+        $this->data->run(
+            tableInterfaceClassName: ParticipantsTable::class,
+            functionName: 'updateThreadUnarchived',
+            parameters: [$threadId]
         );
 
         return $message['messageId'];

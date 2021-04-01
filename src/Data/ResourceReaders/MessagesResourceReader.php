@@ -2,9 +2,12 @@
 namespace CarloNicora\Minimalism\Services\Messaging\Data\ResourceReaders;
 
 use CarloNicora\JsonApi\Objects\ResourceObject;
-use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingLoader;
+use CarloNicora\Minimalism\Abstracts\AbstractLoader;
+use CarloNicora\Minimalism\Objects\DataFunction;
+use CarloNicora\Minimalism\Services\Messaging\Data\Builders\MessageBuilder;
+use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\MessagesDataReader;
 
-class MessagesResourceReader extends AbstractMessagingLoader
+class MessagesResourceReader extends AbstractLoader
 {
     /**
      * @param int $threadId
@@ -18,7 +21,16 @@ class MessagesResourceReader extends AbstractMessagingLoader
         ?int $fromMessageId=null,
     ): array
     {
-
+        /** @see MessagesDataReader::byThreadId() */
+        return $this->builder->build(
+            resourceTransformerClass: MessageBuilder::class,
+            function: new DataFunction(
+                type: DataFunction::TYPE_LOADER,
+                className: MessagesDataReader::class,
+                functionName: 'byThreadId',
+                parameters: [$threadId, $userId, $fromMessageId]
+            )
+        );
     }
 
     /**
@@ -29,6 +41,17 @@ class MessagesResourceReader extends AbstractMessagingLoader
         int $messageId,
     ): ResourceObject
     {
-
+        /** @see MessagesDataReader::byMessageId() */
+        return current(
+            $this->builder->build(
+                resourceTransformerClass: MessageBuilder::class,
+                function: new DataFunction(
+                    type: DataFunction::TYPE_LOADER,
+                    className: MessagesDataReader::class,
+                    functionName: 'byMessageId',
+                    parameters: [$messageId]
+                )
+            )
+        );
     }
 }

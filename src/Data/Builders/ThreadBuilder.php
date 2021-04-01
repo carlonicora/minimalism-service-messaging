@@ -6,7 +6,6 @@ use CarloNicora\JsonApi\Objects\Meta;
 use CarloNicora\Minimalism\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\Builder\Abstracts\AbstractResourceBuilder;
 use CarloNicora\Minimalism\Services\Builder\Objects\RelationshipBuilder;
-use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\MessagesDataReader;
 use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\UsersDataReader;
 use Exception;
 
@@ -24,6 +23,10 @@ class ThreadBuilder extends AbstractResourceBuilder
     ): void
     {
         $this->response->id = $this->encrypter->encryptId($data['threadId']);
+
+        $this->response->attributes->add('lastMessageTime', $data['creationTime']);
+        $this->response->attributes->add('lastMessage', $data['content']);
+        $this->response->attributes->add('unreadMessages', $data['unread']);
     }
     /**
      * @param array $data
@@ -69,18 +72,6 @@ class ThreadBuilder extends AbstractResourceBuilder
                 className: UsersDataReader::class,
                 functionName: 'byThreadId',
                 parameters: ['threadId']
-            )
-        );
-
-        /** @see MessagesDataReader::byThreadId() */
-        $response[] = new RelationshipBuilder(
-            name: 'messages',
-            builderClassName: MessageBuilder::class,
-            function: new DataFunction(
-                type: DataFunction::TYPE_LOADER,
-                className: MessagesDataReader::class,
-                functionName: 'byThreadId',
-                parameters: ['threadId', 'fromMessageId']
             )
         );
 

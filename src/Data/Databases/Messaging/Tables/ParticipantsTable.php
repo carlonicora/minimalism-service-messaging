@@ -16,7 +16,7 @@ class ParticipantsTable extends AbstractMySqlTable
                         +  FieldInterface::PRIMARY_KEY,
         'userId'        => FieldInterface::STRING
                         +  FieldInterface::PRIMARY_KEY,
-        'isAchieved'    => FieldInterface::INTEGER,
+        'isArchived'    => FieldInterface::INTEGER,
         'lastActivity'  => FieldInterface::STRING
     ];
 
@@ -33,5 +33,51 @@ class ParticipantsTable extends AbstractMySqlTable
         $this->parameters = ['i', $threadId];
 
         return $this->functions->runRead();
+    }
+
+    /**
+     * @param int $threadId
+     * @param int $userId
+     * @throws Exception
+     */
+    public function updateThreadArchived(
+        int $threadId,
+        int $userId,
+    ): void
+    {
+        $this->sql = 'UPDATE participants SET isArchived=? WHERE threadId=? AND userId=?;';
+        $this->parameters = ['iii', true, $threadId, $userId];
+
+        $this->functions->runSql();
+    }
+
+    /**
+     * @param int $threadId
+     * @throws Exception
+     */
+    public function updateThreadUnarchived(
+        int $threadId,
+    ): void
+    {
+        $this->sql = 'UPDATE participants SET isArchived=? WHERE threadId=?;';
+        $this->parameters = ['ii', false, $threadId];
+
+        $this->functions->runSql();
+    }
+
+    /**
+     * @param int $threadId
+     * @param int $userId
+     * @throws Exception
+     */
+    public function updateThreadAsRead(
+        int $threadId,
+        int $userId,
+    ): void
+    {
+        $this->sql = 'UPDATE participants SET lastActivity=? WHERE threadId=? AND userId=?;';
+        $this->parameters = ['sii', date('Y-m-d H:i:s'), $threadId, $userId];
+
+        $this->functions->runSql();
     }
 }

@@ -1,10 +1,11 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\DataReaders;
 
-use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingLoader;
+use CarloNicora\Minimalism\Abstracts\AbstractLoader;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ParticipantsTable;
+use CarloNicora\Minimalism\Services\Messaging\Data\Factories\MessagingCacheFactory;
 
-class UsersDataReader extends AbstractMessagingLoader
+class UsersDataReader extends AbstractLoader
 {
     /**
      * @param int $threadId
@@ -14,12 +15,14 @@ class UsersDataReader extends AbstractMessagingLoader
         int $threadId
     ): array
     {
+        $cacheFactory = new MessagingCacheFactory();
+
         /** @see ParticipantsTable::readByThreadId() */
         return $this->data->read(
             tableInterfaceClassName: ParticipantsTable::class,
             functionName: 'readByThreadId',
             parameters: [$threadId],
-            cacheBuilder: $this->cacheFactory->threadParticipants($threadId)
+            cacheBuilder: $cacheFactory->threadParticipants($threadId)
         );
     }
 

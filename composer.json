@@ -15,11 +15,6 @@
       "role": "Developer"
     }
   ],
-  "autoload": {
-    "psr-4": {
-      "CarloNicora\\Minimalism\\Services\\Messaging\\":"src/"
-    }
-  },
   "require": {
     "php": ">=8.0",
     "ext-json": "*",
@@ -27,8 +22,23 @@
     "ext-redis": "*",
     "carlonicora/jsonapi": "~3.0",
     "carlonicora/minimalism": "~12.5",
+    "carlonicora/minimalism-service-encrypter": "~3.0",
     "carlonicora/minimalism-service-mysql": "~4.2",
     "carlonicora/minimalism-service-builder": "~1.0",
     "carlonicora/minimalism-service-cacher": "~3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "CarloNicora\\Minimalism\\Services\\Messaging\\":"src/"
+    }
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master",
+    "phpunit/phpunit": "^9"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CarloNicora\\Minimalism\\Services\\Messaging\\Tests\\": "tests/"
+    }
   }
 }

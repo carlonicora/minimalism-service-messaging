@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" colors="true" verbose="true" stopOnFailure="false" stderr="false">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </coverage>
+  <testsuites>
+    <testsuite name="minimalism-service-messaging tests">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <logging/>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="TEST_CLIENT_ID" value="42a5f1031eda6998fe5c105e0036b9bfce407a3396bb2d4387c55abc5e8512c7" />
+  </php>
+</phpunit>

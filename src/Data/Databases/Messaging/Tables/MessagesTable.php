@@ -18,33 +18,54 @@ class MessagesTable extends AbstractMySqlTable
         'threadId'      => FieldInterface::INTEGER,
         'userId'        => FieldInterface::INTEGER,
         'content'       => FieldInterface::STRING,
-        'creationTime'  => FieldInterface::INTEGER
+        'creationTime'  => FieldInterface::STRING
                         +  FieldInterface::TIME_CREATE
     ];
 
     /**
      * @param int $threadId
+     * @param int $userId
      * @param int|null $fromMessageId
      * @return array
      * @throws Exception
      */
     public function readByThreadId(
         int $threadId,
+        int $userId,
         ?int $fromMessageId=null
     ): array
     {
-        $this->sql = 'SELECT messageId, userId, content, creationTime'
+        $this->sql = 'SELECT messages.messageId, messages.userId, messages.content, messages.creationTime, IF(creationTime>=participants.lastActivity, 1, 0) as unread'
             . ' FROM messages'
-            . ' WHERE threadId=?';
-        $this->parameters = ['i', $threadId];
+            . ' JOIN participants ON participants.threadId=? AND participants.userId=?'
+            . ' WHERE messages.threadId=?'
+            . ' AND messages.messageId NOT IN (SELECT messageId FROM deleted_messages WHERE userId=?)';
+        $this->parameters = ['iiii', $threadId, $userId, $threadId, $userId];
 
         if ($fromMessageId !== null){
-            $this->sql .= ' AND messageId<?';
+            $this->sql .= ' AND messages.messageId<?';
             $this->parameters[0] .= 'i';
             $this->parameters[] = $fromMessageId;
         }
 
-        $this->sql .= ' ORDER BY creationTime DESC;';
+        $this->sql .= ' ORDER BY messages.creationTime DESC;';
+
+        return $this->functions->runRead();
+    }
+
+    /**
+     * @param int $messageId
+     * @return array
+     * @throws Exception
+     */
+    public function readByMessageId(
+        int $messageId,
+    ): array
+    {
+        $this->sql = 'SELECT messageId, userId, content, creationTime, 1 as unread'
+            . ' FROM messages'
+            . ' WHERE messages.messageId=?';
+        $this->parameters = ['i', $messageId];
 
         return $this->functions->runRead();
     }

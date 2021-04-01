@@ -5,7 +5,6 @@ use CarloNicora\JsonApi\Objects\Link;
 use CarloNicora\Minimalism\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\Builder\Abstracts\AbstractResourceBuilder;
 use CarloNicora\Minimalism\Services\Builder\Objects\RelationshipBuilder;
-use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\MessagesDataReader;
 use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\UsersDataReader;
 use Exception;
 
@@ -26,6 +25,7 @@ class MessageBuilder extends AbstractResourceBuilder
         $this->response->id = $this->encrypter->encryptId($data['messageId']);
         $this->response->attributes->add('creationTime', $data['creationTime']);
         $this->response->attributes->add('content', $data['content']);
+        $this->response->attributes->add('isUnread', $data['unread']===1);
     }
 
     /**
