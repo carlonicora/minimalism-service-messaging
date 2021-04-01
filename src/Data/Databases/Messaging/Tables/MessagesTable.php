@@ -48,7 +48,8 @@ class MessagesTable extends AbstractMySqlTable
             $this->parameters[] = $fromMessageId;
         }
 
-        $this->sql .= ' ORDER BY messages.creationTime DESC;';
+        $this->sql .= ' ORDER BY messages.creationTime DESC'
+            . ' LIMIT 0,25;';
 
         return $this->functions->runRead();
     }

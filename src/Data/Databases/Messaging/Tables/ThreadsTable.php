@@ -45,7 +45,8 @@ class ThreadsTable extends AbstractMySqlTable
         }
 
         $this->sql .= ' GROUP BY threads.threadId, messages.creationTime, messages.content'
-            . ' ORDER BY messages.creationTime DESC;';
+            . ' ORDER BY messages.creationTime DESC'
+            . ' LIMIT 0,25;';
 
         return $this->functions->runRead();
     }
