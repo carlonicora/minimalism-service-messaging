@@ -29,23 +29,23 @@ class ThreadsTable extends AbstractMySqlTable
         int $fromTime=null,
     ): array
     {
-        $this->sql = 'SELECT threads.threadId, messages.creationTime, messages.content, count(msgs.messageId) as unread'
+        $this->sql = 'SELECT threads.threadId, messages.createdAt, messages.content, count(msgs.messageId) as unread'
             . ' FROM threads'
-            . ' JOIN messages ON messages.messageId=(SELECT messages.messageId FROM messages WHERE messages.threadId=threads.threadId ORDER BY messages.creationTime DESC LIMIT 1)'
+            . ' JOIN messages ON messages.messageId=(SELECT messages.messageId FROM messages WHERE messages.threadId=threads.threadId ORDER BY messages.createdAt DESC LIMIT 1)'
             . ' JOIN participants ON threads.threadId=participants.threadId'
-            . ' LEFT JOIN messages msgs ON msgs.threadId=threads.threadId AND msgs.userId=? AND msgs.creationTime>=participants.lastActivity'
+            . ' LEFT JOIN messages msgs ON msgs.threadId=threads.threadId AND msgs.userId=? AND msgs.createdAt>=participants.lastActivity'
             . ' WHERE participants.userId=? AND participants.isArchived=?';
 
         $this->parameters = ['iii', $userId, $userId, 0];
 
         if ($fromTime !== null){
-            $this->sql .= ' AND messages.creationTime<?';
+            $this->sql .= ' AND messages.createdAt<?';
             $this->parameters[0] .= 's';
             $this->parameters[] = date('Y-m-d H:i:s', $fromTime);
         }
 
-        $this->sql .= ' GROUP BY threads.threadId, messages.creationTime, messages.content'
-            . ' ORDER BY messages.creationTime DESC'
+        $this->sql .= ' GROUP BY threads.threadId, messages.createdAt, messages.content'
+            . ' ORDER BY messages.createdAt DESC'
             . ' LIMIT 0,25;';
 
         return $this->functions->runRead();
@@ -63,8 +63,8 @@ class ThreadsTable extends AbstractMySqlTable
         $this->sql = 'SELECT count(threads.threadId) as counter'
             . ' FROM threads'
             . ' JOIN participants ON threads.threadId=participants.threadId AND participants.userId=?'
-            . ' JOIN messages ON messages.messageId=(SELECT messages.messageId FROM messages WHERE messages.threadId=threads.threadId ORDER BY messages.creationTime DESC LIMIT 1)'
-            . ' WHERE messages.creationTime>=participants.lastActivity;';
+            . ' JOIN messages ON messages.messageId=(SELECT messages.messageId FROM messages WHERE messages.threadId=threads.threadId ORDER BY messages.createdAt DESC LIMIT 1)'
+            . ' WHERE messages.createdAt>=participants.lastActivity;';
         $this->parameters = ['i', $userId];
 
         $records = $this->functions->runRead();

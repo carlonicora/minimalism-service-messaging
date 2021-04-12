@@ -16,7 +16,7 @@ class DeletedMessagesTable extends AbstractMySqlTable
                             +  FieldInterface::AUTO_INCREMENT,
         'userId'            => FieldInterface::INTEGER,
         'messageId'         => FieldInterface::INTEGER,
-        'creationTime'      => FieldInterface::STRING
+        'createdAt'         => FieldInterface::STRING
                             +  FieldInterface::TIME_CREATE
     ];
 }

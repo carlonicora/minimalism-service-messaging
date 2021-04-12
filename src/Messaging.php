@@ -3,8 +3,11 @@
 namespace CarloNicora\Minimalism\Services\Messaging;
 
 use CarloNicora\JsonApi\Document;
+use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Interfaces\DataLoaderInterface;
 use CarloNicora\Minimalism\Interfaces\ServiceInterface;
+use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\MessagesDataReader;
+use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\ParticipantsDataReader;
 use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\ThreadsDataReader;
 use CarloNicora\Minimalism\Services\Messaging\Data\DataWriters\MessagesDataWriter;
 use CarloNicora\Minimalism\Services\Messaging\Data\DataWriters\ThreadsDataWriter;
@@ -12,6 +15,7 @@ use CarloNicora\Minimalism\Services\Messaging\Data\ResourceReaders\MessagesResou
 use CarloNicora\Minimalism\Services\Messaging\Data\ResourceReaders\ThreadsResourceReader;
 use CarloNicora\Minimalism\Services\Pools;
 use Exception;
+use RuntimeException;
 
 class Messaging implements ServiceInterface
 {
@@ -24,11 +28,17 @@ class Messaging implements ServiceInterface
     /** @var ThreadsResourceReader|DataLoaderInterface|null  */
     private ThreadsResourceReader|DataLoaderInterface|null $readThreadsResources=null;
 
+    /** @var MessagesDataReader|DataLoaderInterface|null  */
+    private MessagesDataReader|DataLoaderInterface|null $readMessageData=null;
+
     /** @var MessagesDataWriter|DataLoaderInterface|null  */
     private MessagesDataWriter|DataLoaderInterface|null $writeMessageData=null;
 
     /** @var ThreadsDataWriter|DataLoaderInterface|null  */
     private ThreadsDataWriter|DataLoaderInterface|null $writeThreadsData=null;
+
+    /** @var ParticipantsDataReader|DataLoaderInterface|null */
+    private ParticipantsDataReader|DataLoaderInterface|null $readParticipantsData=null;
 
     /**
      * Messaging constructor.
@@ -106,6 +116,32 @@ class Messaging implements ServiceInterface
     }
 
     /**
+     * @return MessagesDataWriter
+     * @throws Exception
+     */
+    private function getReadMessagesData(): MessagesDataReader
+    {
+        if ($this->readMessageData === null){
+            $this->readMessageData = $this->pools->get(MessagesDataReader::class);
+        }
+
+        return $this->readMessageData;
+    }
+
+    /**
+     * @return ParticipantsDataReader
+     * @throws Exception
+     */
+    private function getReadParticipantsData(): ParticipantsDataReader
+    {
+        if ($this->readParticipantsData === null) {
+            $this->readParticipantsData = $this->pools->get(ParticipantsDataReader::class);
+        }
+
+        return $this->readParticipantsData;
+    }
+
+    /**
      * @param int $userId
      * @param int|null $fromTime
      * @return Document
@@ -120,9 +156,9 @@ class Messaging implements ServiceInterface
 
         $response->addResourceList(
             resourceList: $this->getReadThreadsResources()->byUserId(
-                userId: $userId,
-                fromTime: $fromTime
-            )
+            userId: $userId,
+            fromTime: $fromTime
+        )
         );
 
         return $response;
@@ -145,10 +181,10 @@ class Messaging implements ServiceInterface
 
         $response->addResourceList(
             resourceList: $this->getReadMessagesResources()->byThreadId(
-                threadId: $threadId,
-                userId: $userId,
-                fromMessageId: $fromMessageId
-            )
+            threadId: $threadId,
+            userId: $userId,
+            fromMessageId: $fromMessageId
+        )
         );
 
         return $response;
@@ -167,8 +203,8 @@ class Messaging implements ServiceInterface
 
         $response->addResource(
             resource: $this->getReadMessagesResources()->byMessageId(
-                messageId: $messageId
-            )
+            messageId: $messageId
+        )
         );
 
         return $response;
@@ -178,14 +214,14 @@ class Messaging implements ServiceInterface
      * @param int $userIdSender
      * @param array $userIds
      * @param string $content
-     * @return int
+     * @return ResourceObject
      * @throws Exception
      */
     public function createThread(
         int $userIdSender,
         array $userIds,
         string $content,
-    ): int
+    ): ResourceObject
     {
         $userIds[] = $userIdSender;
 
@@ -199,27 +235,35 @@ class Messaging implements ServiceInterface
             content: $content
         );
 
-        return $threadId;
+        return $this->getReadThreadsResources()->byId($threadId);
     }
 
     /**
      * @param int $userIdSender
      * @param int $threadId
      * @param string $content
-     * @return int
+     * @return ResourceObject
      * @throws Exception
      */
     public function sendMessage(
         int $userIdSender,
         int $threadId,
         string $content,
-    ): int
+    ): ResourceObject
     {
-        return $this->getWriteMessagesData()->create(
+        $participants = $this->getReadParticipantsData()->byThreadId($threadId);
+        $participantIds = array_column($participants, 'userId');
+        if (false === in_array($userIdSender, $participantIds, true)) {
+            throw new RuntimeException('User is not a thread participant', 403);
+        }
+
+        $messageId = $this->getWriteMessagesData()->create(
             userIdSender: $userIdSender,
             threadId: $threadId,
             content: $content
         );
+
+        return $this->getReadMessagesResources()->byMessageId($messageId);
     }
 
     /**
@@ -232,6 +276,11 @@ class Messaging implements ServiceInterface
         int $messageId
     ): void
     {
+        $message = $this->getReadMessagesData()->byMessageId($messageId);
+        if ($message['userId'] !== $userId) {
+            throw new RuntimeException('The current user has no access to a message', 403);
+        }
+
         $this->getWriteMessagesData()->delete(
             userId: $userId,
             messageId: $messageId

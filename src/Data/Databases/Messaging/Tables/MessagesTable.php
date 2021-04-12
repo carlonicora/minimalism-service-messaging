@@ -18,7 +18,7 @@ class MessagesTable extends AbstractMySqlTable
         'threadId'      => FieldInterface::INTEGER,
         'userId'        => FieldInterface::INTEGER,
         'content'       => FieldInterface::STRING,
-        'creationTime'  => FieldInterface::STRING
+        'createdAt'     => FieldInterface::STRING
                         +  FieldInterface::TIME_CREATE
     ];
 
@@ -35,7 +35,7 @@ class MessagesTable extends AbstractMySqlTable
         ?int $fromMessageId=null
     ): array
     {
-        $this->sql = 'SELECT messages.messageId, messages.userId, messages.content, messages.creationTime, IF(creationTime>=participants.lastActivity, 1, 0) as unread'
+        $this->sql = 'SELECT messages.messageId, messages.userId, messages.content, messages.createdAt, IF(createdAt>=participants.lastActivity, 1, 0) as unread'
             . ' FROM messages'
             . ' JOIN participants ON participants.threadId=? AND participants.userId=?'
             . ' WHERE messages.threadId=?'
@@ -48,7 +48,7 @@ class MessagesTable extends AbstractMySqlTable
             $this->parameters[] = $fromMessageId;
         }
 
-        $this->sql .= ' ORDER BY messages.creationTime DESC'
+        $this->sql .= ' ORDER BY messages.createdAt DESC'
             . ' LIMIT 0,25;';
 
         return $this->functions->runRead();
@@ -63,7 +63,7 @@ class MessagesTable extends AbstractMySqlTable
         int $messageId,
     ): array
     {
-        $this->sql = 'SELECT messageId, userId, content, creationTime, 1 as unread'
+        $this->sql = 'SELECT messageId, userId, content, createdAt, 1 as unread'
             . ' FROM messages'
             . ' WHERE messages.messageId=?';
         $this->parameters = ['i', $messageId];

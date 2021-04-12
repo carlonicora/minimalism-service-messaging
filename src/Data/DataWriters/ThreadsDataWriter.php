@@ -68,7 +68,7 @@ class ThreadsDataWriter extends AbstractLoader
         /** @See ParticipantsTable::updateThreadAsRead() */
         $this->data->run(
             tableInterfaceClassName: ParticipantsTable::class,
-            functionName: 'archiveThread',
+            functionName: 'updateThreadAsRead',
             parameters: [$threadId,$userId]
         );
     }
