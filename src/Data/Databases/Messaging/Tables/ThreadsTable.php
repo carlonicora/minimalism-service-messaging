@@ -75,4 +75,23 @@ class ThreadsTable extends AbstractMySqlTable
 
         return $records[0]['counter'];
     }
+
+    /**
+     * @param int $messageId
+     * @return array
+     * @throws Exception
+     */
+    public function byMessageId(
+        int $messageId
+    ): array
+    {
+        $this->sql = ' SELECT threads.* '
+            . ' FROM messages '
+            . ' JOIN threads ON messsages.threadId = threads.threadId'
+            . ' WHERE messages.messageId = ?';
+
+        $this->parameters = ['i', $messageId];
+
+        return $this->functions->runRead();
+    }
 }
