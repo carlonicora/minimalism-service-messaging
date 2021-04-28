@@ -51,7 +51,6 @@ class MessagesDataWriter extends AbstractLoader
             'messageId' => $messageId
         ];
 
-        /** @noinspection UnusedFunctionResultInspection */
         $this->data->insert(
             tableInterfaceClassName: DeletedMessagesTable::class,
             records: $deletedMessage

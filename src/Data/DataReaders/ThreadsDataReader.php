@@ -54,4 +54,28 @@ class ThreadsDataReader extends AbstractLoader
         );
         return $this->returnSingleValue($result);
     }
+
+    /**
+     * @param int $userId1
+     * @param int $userId2
+     * @return array
+     * @throws RecordNotFoundException
+     */
+    public function getDialogThread(
+        int $userId1,
+        int $userId2
+    ): array
+    {
+        /** @see ThreadsTable::loadDialogThread() */
+        $result = $this->data->read(
+            tableInterfaceClassName: ThreadsTable::class,
+            functionName: 'loadDialogThread',
+            parameters: [
+                'userId1' => $userId1,
+                'userId2' => $userId2
+            ]
+        );
+
+        return $this->returnSingleValue($result);
+    }
 }

@@ -32,7 +32,7 @@ use Exception;
  *     schema="messageAttributes",
  *     description="Message resource attributes",
  *     title="Message attributes",
- *     @OA\Property(property="creationTime", type="string", format="date-time", nullable=false, example="2021-01-01 23:59:59"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", nullable=false, example="2021-01-01 23:59:59"),
  *     @OA\Property(property="content", type="string", format="", nullable=false, minLength="1", maxLength="100", example="A content"),
  *     @OA\Property(property="isUnread", type="boolean", example=true)
  * )
@@ -69,7 +69,7 @@ class MessageBuilder extends AbstractResourceBuilder
     ): void
     {
         $this->response->id = $this->encrypter->encryptId($data['messageId']);
-        $this->response->attributes->add('creationTime', $data['creationTime']);
+        $this->response->attributes->add('createdAt', $data['createdAt']);
         $this->response->attributes->add('content', $data['content']);
         $this->response->attributes->add('isUnread', $data['unread']===1);
     }

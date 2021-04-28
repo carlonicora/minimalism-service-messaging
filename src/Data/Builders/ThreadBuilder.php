@@ -77,9 +77,9 @@ class ThreadBuilder extends AbstractResourceBuilder
     {
         $this->response->id = $this->encrypter->encryptId($data['threadId']);
 
-        $this->response->attributes->add('lastMessageTime', $data['creationTime']);
-        $this->response->attributes->add('lastMessage', $data['content']);
-        $this->response->attributes->add('unreadMessages', $data['unread']);
+        $this->response->attributes->add('lastMessageTime', $data['createdAt'] ?? null);
+        $this->response->attributes->add('lastMessage', $data['content']  ?? null);
+        $this->response->attributes->add('unreadMessages', $data['unread']  ?? null);
     }
     /**
      * @param array $data

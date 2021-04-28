@@ -14,8 +14,8 @@ class ThreadsTable extends AbstractMySqlTable
     /** @var array  */
     protected array $fields = [
         'threadId'  => FieldInterface::INTEGER
-                    +  FieldInterface::PRIMARY_KEY
-                    +  FieldInterface::AUTO_INCREMENT,
+            +  FieldInterface::PRIMARY_KEY
+            +  FieldInterface::AUTO_INCREMENT,
     ];
 
     /**
@@ -91,6 +91,37 @@ class ThreadsTable extends AbstractMySqlTable
             . ' WHERE messages.messageId = ?';
 
         $this->parameters = ['i', $messageId];
+
+        return $this->functions->runRead();
+    }
+
+    /**
+     * @param int $userId1
+     * @param int $userId2
+     * @return array
+     * @throws Exception
+     */
+    public function loadDialogThread(
+        int $userId1,
+        int $userId2
+    ): array
+    {
+        $this->sql = ' SELECT participants.threadId '
+            . ' FROM participants '
+            . ' WHERE participants.threadId IN '
+            . ' ( '
+            . '    SELECT participants.threadId '
+            . '    FROM participants '
+            . '    WHERE participants.userId = ? AND participants.threadId IN ('
+            . '      SELECT participants.threadId '
+            . '      FROM participants '
+            . '      WHERE participants.userId = ? '
+            . '    )'
+            . ' )'
+            . ' GROUP BY participants.threadId '
+            . ' HAVING count(participants.userId) = 2; ';
+
+        $this->parameters = ['ii', $userId1, $userId2];
 
         return $this->functions->runRead();
     }

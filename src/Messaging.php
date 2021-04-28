@@ -1,9 +1,10 @@
-<?php
+<?php /** @noinspection PropertyInitializationFlawsInspection */
 
 namespace CarloNicora\Minimalism\Services\Messaging;
 
 use CarloNicora\JsonApi\Document;
 use CarloNicora\JsonApi\Objects\ResourceObject;
+use CarloNicora\Minimalism\Exceptions\RecordNotFoundException;
 use CarloNicora\Minimalism\Interfaces\DataLoaderInterface;
 use CarloNicora\Minimalism\Interfaces\ServiceInterface;
 use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\MessagesDataReader;
@@ -116,7 +117,7 @@ class Messaging implements ServiceInterface
     }
 
     /**
-     * @return MessagesDataWriter
+     * @return MessagesDataReader
      * @throws Exception
      */
     private function getReadMessagesData(): MessagesDataReader
@@ -139,6 +140,38 @@ class Messaging implements ServiceInterface
         }
 
         return $this->readParticipantsData;
+    }
+
+    /**
+     * @param int $userId1
+     * @param int $userId2
+     * @return Document
+     * @throws Exception
+     */
+    public function getDialogThread(
+        int $userId1,
+        int $userId2
+    ): Document
+    {
+        $response = new Document();
+        try {
+            $response->addResource(
+                $this->getReadThreadsResources()->getDialogThread(
+                    userId1: $userId1,
+                    userId2: $userId2
+                )
+            );
+        } catch (RecordNotFoundException) {
+            $newThreadId = $this->getWriteThreadsData()->create(
+                userIds: [$userId1, $userId2]
+            );
+
+            $response->addResource(
+                $this->getReadThreadsResources()->byId($newThreadId)
+            );
+        }
+
+        return $response;
     }
 
     /**

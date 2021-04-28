@@ -68,7 +68,7 @@ class DeletedMessageTableTest extends AbstractUnitTest
         self::assertArrayHasKey('deletedMessageId', $tableFields);
         self::assertArrayHasKey('userId', $tableFields);
         self::assertArrayHasKey('messageId', $tableFields);
-        self::assertArrayHasKey('creationTime', $tableFields);
+        self::assertArrayHasKey('createdAt', $tableFields);
     }
 
     /**

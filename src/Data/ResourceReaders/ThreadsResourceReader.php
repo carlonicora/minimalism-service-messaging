@@ -3,6 +3,7 @@ namespace CarloNicora\Minimalism\Services\Messaging\Data\ResourceReaders;
 
 use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Abstracts\AbstractLoader;
+use CarloNicora\Minimalism\Exceptions\RecordNotFoundException;
 use CarloNicora\Minimalism\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\Messaging\Data\Builders\ThreadBuilder;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ThreadsTable;
@@ -48,5 +49,32 @@ class ThreadsResourceReader extends AbstractLoader
                 parameters: [$userId, $fromTime]
             )
         );
+    }
+
+    /**
+     * @param int $userId1
+     * @param int $userId2
+     * @return ResourceObject
+     * @throws RecordNotFoundException
+     * @noinspection PhpDocRedundantThrowsInspection
+     */
+    public function getDialogThread(
+        int $userId1,
+        int $userId2
+    ): ResourceObject
+    {
+        /** @see ThreadsDataReader::getDialogThread() */
+        return current($this->builder->build(
+            resourceTransformerClass: ThreadBuilder::class,
+            function: new DataFunction(
+                type: DataFunction::TYPE_LOADER,
+                className: ThreadsDataReader::class,
+                functionName: 'getDialogThread',
+                parameters: [
+                    'userId1' => $userId1,
+                    'userId2' => $userId2
+                ]
+            )
+        ));
     }
 }

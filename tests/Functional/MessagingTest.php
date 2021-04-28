@@ -79,7 +79,7 @@ class MessagingTest extends AbstractFunctionalTest
     {
         $threads = $this->messaging->getThreadsList(
             userId: 1,
-            fromTime: strtotime('2020-01-02 00:00:00')
+            fromTime: strtotime('2020-02-20 00:00:00')
         );
 
         self::assertCount(1,$threads->resources);
@@ -96,7 +96,7 @@ class MessagingTest extends AbstractFunctionalTest
             userId: 1,
         );
 
-        self::assertCount(2, $messages->resources);
+        self::assertCount(25, $messages->resources);
 
         return $messages->resources[0];
     }
@@ -119,7 +119,7 @@ class MessagingTest extends AbstractFunctionalTest
      */
     public function testGetCorrectMessageResourceAttributes(ResourceObject $message): void
     {
-        self::assertTrue($message->attributes->has('creationTime'));
+        self::assertTrue($message->attributes->has('createdAt'));
         self::assertTrue($message->attributes->has('content'));
     }
 
@@ -130,10 +130,10 @@ class MessagingTest extends AbstractFunctionalTest
     {
         $messages = $this->messaging->getMessagesList(
             threadId: 1,
-            userId: 2,
+            userId: 2867,
         );
 
-        self::assertCount(3, $messages->resources);
+        self::assertCount(25, $messages->resources);
     }
 
     /**
@@ -143,7 +143,7 @@ class MessagingTest extends AbstractFunctionalTest
     {
         $messages = $this->messaging->getMessagesList(
             threadId: 1,
-            userId: 2,
+            userId: 2867,
             fromMessageId: 2
         );
 
@@ -170,15 +170,15 @@ class MessagingTest extends AbstractFunctionalTest
     public function testCreateThread(): int
     {
         $randomUser = time();
-        $threadId = $this->messaging->createThread(
+        $thread = $this->messaging->createThread(
             userIdSender: 3,
             userIds: [$randomUser],
             content: 'First Content of the thread',
         );
 
-        self::assertNotNull($threadId);
+        self::assertNotNull($thread);
 
-        return $threadId;
+        return $this->getEncrypter()->decryptId($thread->id);
     }
 
     /**
@@ -189,7 +189,7 @@ class MessagingTest extends AbstractFunctionalTest
      */
     public function testCreateMessage(int $threadId): int
     {
-        $messageId = $this->messaging->sendMessage(
+        $message = $this->messaging->sendMessage(
             userIdSender: 3,
             threadId: $threadId,
             content: 'Second Content of the thread'
@@ -197,7 +197,7 @@ class MessagingTest extends AbstractFunctionalTest
 
         self::assertTrue(true);
 
-        return $messageId;
+        return $this->getEncrypter()->decryptId($message->id);
     }
 
     /**
@@ -228,15 +228,15 @@ class MessagingTest extends AbstractFunctionalTest
     public function testCreateThreadToBeArchived(): int
     {
         $randomUser = time();
-        $threadId = $this->messaging->createThread(
+        $thread = $this->messaging->createThread(
             userIdSender: 4,
             userIds: [$randomUser],
             content: 'First Content of the thread',
         );
 
-        self::assertNotNull($threadId);
+        self::assertNotNull($thread);
 
-        return $threadId;
+        return $this->getEncrypter()->decryptId($thread->id);
     }
 
     /**

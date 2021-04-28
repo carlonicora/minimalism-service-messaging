@@ -69,7 +69,7 @@ class MessagesTableTest extends AbstractUnitTest
         self::assertArrayHasKey('threadId', $tableFields);
         self::assertArrayHasKey('userId', $tableFields);
         self::assertArrayHasKey('content', $tableFields);
-        self::assertArrayHasKey('creationTime', $tableFields);
+        self::assertArrayHasKey('createdAt', $tableFields);
     }
 
     /**

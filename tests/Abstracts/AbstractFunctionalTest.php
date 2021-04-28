@@ -1,8 +1,10 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Tests\Abstracts;
 
+use CarloNicora\Minimalism\Interfaces\EncrypterInterface;
 use CarloNicora\Minimalism\Interfaces\ServiceInterface;
 use CarloNicora\Minimalism\Minimalism;
+use CarloNicora\Minimalism\Services\Encrypter\Encrypter;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +15,7 @@ abstract class AbstractFunctionalTest extends TestCase
      */
     protected function getEnv(): array
     {
-        $fileName = __DIR__ . '/../../../.env';
+        $fileName = __DIR__ . '/../../.env';
 
         return file($fileName);
     }
@@ -43,4 +45,14 @@ abstract class AbstractFunctionalTest extends TestCase
     {
         return (new Minimalism())->getService(serviceName: $serviceName, requiresBaseService: false);
     }
+
+    /**
+     * @return EncrypterInterface
+     */
+    public function getEncrypter(): EncrypterInterface
+    {
+        $encrypterKey = $this->getEnvParameter('MINIMALISM_SERVICE_ENCRYPTER_KEY');
+        return new Encrypter($encrypterKey);
+    }
+
 }
