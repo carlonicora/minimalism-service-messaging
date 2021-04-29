@@ -87,7 +87,7 @@ class ThreadsTable extends AbstractMySqlTable
     {
         $this->sql = ' SELECT threads.* '
             . ' FROM messages '
-            . ' JOIN threads ON messsages.threadId = threads.threadId'
+            . ' JOIN threads ON messages.threadId = threads.threadId'
             . ' WHERE messages.messageId = ?';
 
         $this->parameters = ['i', $messageId];
