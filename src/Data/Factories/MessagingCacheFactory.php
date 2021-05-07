@@ -15,9 +15,10 @@ class MessagingCacheFactory extends CacheBuilderFactory
     ): CacheBuilder
     {
         return $this->createList(
-            'userId',
-            'threadId',
-            $threadId
+            listName: 'userId',
+            cacheName: 'threadId',
+            identifier: $threadId,
+            saveGranular: false
         );
     }
 }
