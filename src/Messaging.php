@@ -378,5 +378,12 @@ class Messaging implements ServiceInterface
      */
     public function destroy(): void
     {
+        $this->readThreadsData=null;
+        $this->readMessagesResources=null;
+        $this->readThreadsResources=null;
+        $this->readMessageData=null;
+        $this->writeMessageData=null;
+        $this->writeThreadsData=null;
+        $this->readParticipantsData=null;
     }
 }
