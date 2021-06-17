@@ -29,7 +29,8 @@ class MessagesResourceReader extends AbstractLoader
                 className: MessagesDataReader::class,
                 functionName: 'byThreadId',
                 parameters: [$threadId, $userId, $fromMessageId]
-            )
+            ),
+            relationshipLevel: 2
         );
     }
 
@@ -50,7 +51,8 @@ class MessagesResourceReader extends AbstractLoader
                     className: MessagesDataReader::class,
                     functionName: 'byMessageId',
                     parameters: [$messageId]
-                )
+                ),
+                relationshipLevel: 2
             )
         );
     }
