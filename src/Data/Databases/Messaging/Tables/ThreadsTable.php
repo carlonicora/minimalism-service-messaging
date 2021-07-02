@@ -33,7 +33,7 @@ class ThreadsTable extends AbstractMySqlTable
             . ' FROM threads'
             . ' JOIN messages ON messages.messageId=(SELECT messages.messageId FROM messages WHERE messages.threadId=threads.threadId ORDER BY messages.createdAt DESC LIMIT 1)'
             . ' JOIN participants ON threads.threadId=participants.threadId'
-            . ' LEFT JOIN messages msgs ON msgs.threadId=threads.threadId AND msgs.userId=? AND msgs.createdAt>=participants.lastActivity'
+            . ' LEFT JOIN messages msgs ON msgs.threadId=threads.threadId AND msgs.userId!=? AND msgs.createdAt>=participants.lastActivity'
             . ' WHERE participants.userId=? AND participants.isArchived=?';
 
         $this->parameters = ['iii', $userId, $userId, 0];
