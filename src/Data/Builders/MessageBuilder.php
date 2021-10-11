@@ -131,7 +131,7 @@ class MessageBuilder extends AbstractResourceBuilder
             name: 'thread',
             builderClassName: ThreadBuilder::class,
             function: new DataFunction(
-                type: DataFunction::TYPE_LOADER,
+                type: DataFunctionInterface::TYPE_LOADER,
                 className: ThreadsDataReader::class,
                 functionName: 'byMessageId',
                 parameters: ['messageId']
