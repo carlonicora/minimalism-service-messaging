@@ -4,6 +4,7 @@ namespace CarloNicora\Minimalism\Services\Messaging\Data\ResourceReaders;
 use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Abstracts\AbstractLoader;
 use CarloNicora\Minimalism\Exceptions\RecordNotFoundException;
+use CarloNicora\Minimalism\Interfaces\DataFunctionInterface;
 use CarloNicora\Minimalism\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\Messaging\Data\Builders\ThreadBuilder;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ThreadsTable;
@@ -21,7 +22,7 @@ class ThreadsResourceReader extends AbstractLoader
         return current($this->builder->build(
             resourceTransformerClass: ThreadBuilder::class,
             function: new DataFunction(
-                type: DataFunction::TYPE_TABLE,
+                type: DataFunctionInterface::TYPE_TABLE,
                 className: ThreadsTable::class,
                 functionName: 'byId',
                 parameters: ['id' => $threadId]
@@ -43,7 +44,7 @@ class ThreadsResourceReader extends AbstractLoader
         return $this->builder->build(
             resourceTransformerClass: ThreadBuilder::class,
             function: new DataFunction(
-                type: DataFunction::TYPE_LOADER,
+                type: DataFunctionInterface::TYPE_LOADER,
                 className: ThreadsDataReader::class,
                 functionName: 'byUserId',
                 parameters: [$userId, $fromTime]
@@ -67,7 +68,7 @@ class ThreadsResourceReader extends AbstractLoader
         return current($this->builder->build(
             resourceTransformerClass: ThreadBuilder::class,
             function: new DataFunction(
-                type: DataFunction::TYPE_LOADER,
+                type: DataFunctionInterface::TYPE_LOADER,
                 className: ThreadsDataReader::class,
                 functionName: 'getDialogThread',
                 parameters: [

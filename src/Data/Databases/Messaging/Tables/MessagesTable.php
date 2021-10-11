@@ -13,13 +13,13 @@ class MessagesTable extends AbstractMySqlTable
     /** @var array  */
     protected array $fields = [
         'messageId'     => FieldInterface::INTEGER
-                        +  FieldInterface::PRIMARY_KEY
-                        +  FieldInterface::AUTO_INCREMENT,
+            +  FieldInterface::PRIMARY_KEY
+            +  FieldInterface::AUTO_INCREMENT,
         'threadId'      => FieldInterface::INTEGER,
         'userId'        => FieldInterface::INTEGER,
         'content'       => FieldInterface::STRING,
         'createdAt'     => FieldInterface::STRING
-                        +  FieldInterface::TIME_CREATE
+            +  FieldInterface::TIME_CREATE
     ];
 
     /**
@@ -67,6 +67,30 @@ class MessagesTable extends AbstractMySqlTable
             . ' FROM messages'
             . ' WHERE messages.messageId=?';
         $this->parameters = ['i', $messageId];
+
+        return $this->functions->runRead();
+    }
+
+    /**
+     * @param int $userId
+     * @param int $lastCheck
+     * @return array
+     * @throws Exception
+     */
+    public function readNewMessagesForUserId(
+        int $userId,
+        int $lastCheck,
+    ): array
+    {
+        $this->sql = 'SELECT messages.*'
+            . ' FROM threads'
+            . ' JOIN participants ON threads.threadId=participants.threadId'
+            . ' JOIN messages ON threads.threadId=messages.threadId'
+            . ' WHERE participants.userId=?'
+            . ' AND messages.userId<>?'
+            . ' AND messages.createdAt>?;';
+
+        $this->parameters = ['iis', $userId, $userId, date('Y-m-d H:i:s', $lastCheck)];
 
         return $this->functions->runRead();
     }
