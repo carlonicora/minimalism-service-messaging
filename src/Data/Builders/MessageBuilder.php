@@ -6,6 +6,7 @@ use CarloNicora\Minimalism\Interfaces\DataFunctionInterface;
 use CarloNicora\Minimalism\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\Builder\Abstracts\AbstractResourceBuilder;
 use CarloNicora\Minimalism\Services\Builder\Objects\RelationshipBuilder;
+use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\ThreadsDataReader;
 use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\UsersDataReader;
 use Exception;
 
@@ -122,6 +123,18 @@ class MessageBuilder extends AbstractResourceBuilder
                 className: UsersDataReader::class,
                 functionName: 'byUserId',
                 parameters: ['userId']
+            )
+        );
+
+        /** @see ThreadsDataReader::byMessageId() */
+        $response[] = new RelationshipBuilder(
+            name: 'thread',
+            builderClassName: ThreadBuilder::class,
+            function: new DataFunction(
+                type: DataFunction::TYPE_LOADER,
+                className: ThreadsDataReader::class,
+                functionName: 'byMessageId',
+                parameters: ['messageId']
             )
         );
 
