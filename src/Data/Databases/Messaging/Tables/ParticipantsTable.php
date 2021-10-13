@@ -29,7 +29,7 @@ class ParticipantsTable extends AbstractMySqlTable
         int $threadId
     ): array
     {
-        $this->sql = 'SELECT userId, lastActivity FROM participants WHERE threadId=?;';
+        $this->sql = 'SELECT userId, isArchived, lastActivity FROM participants WHERE threadId=?;';
         $this->parameters = ['i', $threadId];
 
         return $this->functions->runRead();
