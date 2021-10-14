@@ -11,7 +11,7 @@ class MessagesTable extends AbstractMySqlTable
     protected string $tableName = 'messages';
 
     /** @var array  */
-    protected array $fields = [
+    protected static array $fields = [
         'messageId'     => FieldInterface::INTEGER
                         +  FieldInterface::PRIMARY_KEY
                         +  FieldInterface::AUTO_INCREMENT,

@@ -11,7 +11,7 @@ class ParticipantsTable extends AbstractMySqlTable
     protected string $tableName = 'participants';
 
     /** @var array  */
-    protected array $fields = [
+    protected static array $fields = [
         'threadId'      => FieldInterface::INTEGER
                         +  FieldInterface::PRIMARY_KEY,
         'userId'        => FieldInterface::STRING

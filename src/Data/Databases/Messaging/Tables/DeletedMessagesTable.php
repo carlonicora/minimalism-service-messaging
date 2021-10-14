@@ -10,7 +10,7 @@ class DeletedMessagesTable extends AbstractMySqlTable
     protected string $tableName = 'deleted_messages';
 
     /** @var array  */
-    protected array $fields = [
+    protected static array $fields = [
         'deletedMessageId'  => FieldInterface::INTEGER
                             +  FieldInterface::PRIMARY_KEY
                             +  FieldInterface::AUTO_INCREMENT,

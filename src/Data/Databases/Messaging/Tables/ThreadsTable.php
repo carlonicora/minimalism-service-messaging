@@ -12,7 +12,7 @@ class ThreadsTable extends AbstractMySqlTable
     protected string $tableName = 'threads';
 
     /** @var array  */
-    protected array $fields = [
+    protected static array $fields = [
         'threadId'  => FieldInterface::INTEGER
             +  FieldInterface::PRIMARY_KEY
             +  FieldInterface::AUTO_INCREMENT,
