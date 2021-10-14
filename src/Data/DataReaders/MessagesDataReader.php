@@ -45,4 +45,22 @@ class MessagesDataReader extends AbstractLoader
 
         return $this->returnSingleValue($messages);
     }
+
+    /**
+     * @param int $userId
+     * @param int $lastChecked
+     * @return array
+     */
+    public function newByUserId(
+        int $userId,
+        int $lastChecked,
+    ): array
+    {
+        /** @see MessagesTable::readNewMessagesForUserId() */
+        return $this->data->read(
+            tableInterfaceClassName: MessagesTable::class,
+            functionName: 'readNewMessagesForUserId',
+            parameters: [$userId, $lastChecked],
+        );
+    }
 }

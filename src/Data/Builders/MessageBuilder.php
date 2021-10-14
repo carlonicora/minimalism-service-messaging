@@ -2,6 +2,7 @@
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Builders;
 
 use CarloNicora\JsonApi\Objects\Link;
+use CarloNicora\Minimalism\Interfaces\DataFunctionInterface;
 use CarloNicora\Minimalism\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\Builder\Abstracts\AbstractResourceBuilder;
 use CarloNicora\Minimalism\Services\Builder\Objects\RelationshipBuilder;
@@ -118,7 +119,7 @@ class MessageBuilder extends AbstractResourceBuilder
             name: 'sender',
             builderClassName: UserBuilder::class,
             function: new DataFunction(
-                type: DataFunction::TYPE_LOADER,
+                type: DataFunctionInterface::TYPE_LOADER,
                 className: UsersDataReader::class,
                 functionName: 'byUserId',
                 parameters: ['userId']
@@ -130,7 +131,7 @@ class MessageBuilder extends AbstractResourceBuilder
             name: 'thread',
             builderClassName: ThreadBuilder::class,
             function: new DataFunction(
-                type: DataFunction::TYPE_LOADER,
+                type: DataFunctionInterface::TYPE_LOADER,
                 className: ThreadsDataReader::class,
                 functionName: 'byMessageId',
                 parameters: ['messageId']
