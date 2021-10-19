@@ -7,7 +7,7 @@ use CarloNicora\Minimalism\Services\MySQL\Interfaces\FieldInterface;
 class DeletedMessagesTable extends AbstractMySqlTable
 {
     /** @var string */
-    protected string $tableName = 'deleted_messages';
+    protected static string $tableName = 'deleted_messages';
 
     /** @var array  */
     protected static array $fields = [

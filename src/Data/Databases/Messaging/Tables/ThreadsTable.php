@@ -9,7 +9,7 @@ use RuntimeException;
 class ThreadsTable extends AbstractMySqlTable
 {
     /** @var string */
-    protected string $tableName = 'threads';
+    protected static string $tableName = 'threads';
 
     /** @var array  */
     protected static array $fields = [
