@@ -4,6 +4,6 @@ namespace CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tab
 
 enum ParticipantStatus: int
 {
-    case ACTIVE = 0;
-    case ARCHIVED = 1;
+    case Active = 0;
+    case Archived = 1;
 }

@@ -37,7 +37,7 @@ class ThreadsTable extends AbstractMySqlTable
             . ' LEFT JOIN messages msgs ON msgs.threadId=threads.threadId AND msgs.userId!=? AND msgs.createdAt>=participants.lastActivity'
             . ' WHERE participants.userId=? AND participants.isArchived=?';
 
-        $this->parameters = ['iii', $userId, $userId, ParticipantStatus::ACTIVE->value];
+        $this->parameters = ['iii', $userId, $userId, ParticipantStatus::Active->value];
 
         if ($fromTime !== null){
             $this->sql .= ' AND messages.createdAt<?';

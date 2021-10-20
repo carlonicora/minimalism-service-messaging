@@ -47,7 +47,7 @@ class ParticipantsTable extends AbstractMySqlTable
     ): void
     {
         $this->sql = 'UPDATE participants SET isArchived=? WHERE threadId=? AND userId=?;';
-        $this->parameters = ['iii', ParticipantStatus::ARCHIVED->value, $threadId, $userId];
+        $this->parameters = ['iii', ParticipantStatus::Archived->value, $threadId, $userId];
 
         $this->functions->runSql();
     }
@@ -61,7 +61,7 @@ class ParticipantsTable extends AbstractMySqlTable
     ): void
     {
         $this->sql = 'UPDATE participants SET isArchived=? WHERE threadId=?;';
-        $this->parameters = ['ii', ParticipantStatus::ACTIVE->value, $threadId];
+        $this->parameters = ['ii', ParticipantStatus::Active->value, $threadId];
 
         $this->functions->runSql();
     }

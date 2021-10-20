@@ -27,7 +27,7 @@ class ThreadsDataWriter extends AbstractLoader
             $participants[] = [
                 'threadId' => $thread['threadId'],
                 'userId' => $userId,
-                'isArchived' => ParticipantStatus::ACTIVE->value,
+                'isArchived' => ParticipantStatus::Active->value,
                 'lastActivity' => date('Y-m-d H:i:s')
             ];
         }
