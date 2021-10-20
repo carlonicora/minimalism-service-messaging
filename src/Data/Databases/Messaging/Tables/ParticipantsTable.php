@@ -1,6 +1,7 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables;
 
+use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\Enums\ParticipantStatus;
 use CarloNicora\Minimalism\Services\MySQL\Abstracts\AbstractMySqlTable;
 use CarloNicora\Minimalism\Services\MySQL\Interfaces\FieldInterface;
 use Exception;
@@ -46,7 +47,7 @@ class ParticipantsTable extends AbstractMySqlTable
     ): void
     {
         $this->sql = 'UPDATE participants SET isArchived=? WHERE threadId=? AND userId=?;';
-        $this->parameters = ['iii', true, $threadId, $userId];
+        $this->parameters = ['iii', ParticipantStatus::ARCHIVED->value, $threadId, $userId];
 
         $this->functions->runSql();
     }
@@ -60,7 +61,7 @@ class ParticipantsTable extends AbstractMySqlTable
     ): void
     {
         $this->sql = 'UPDATE participants SET isArchived=? WHERE threadId=?;';
-        $this->parameters = ['ii', false, $threadId];
+        $this->parameters = ['ii', ParticipantStatus::ACTIVE->value, $threadId];
 
         $this->functions->runSql();
     }

@@ -1,6 +1,7 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables;
 
+use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\Enums\ParticipantStatus;
 use CarloNicora\Minimalism\Services\MySQL\Abstracts\AbstractMySqlTable;
 use CarloNicora\Minimalism\Services\MySQL\Interfaces\FieldInterface;
 use Exception;
@@ -36,7 +37,7 @@ class ThreadsTable extends AbstractMySqlTable
             . ' LEFT JOIN messages msgs ON msgs.threadId=threads.threadId AND msgs.userId!=? AND msgs.createdAt>=participants.lastActivity'
             . ' WHERE participants.userId=? AND participants.isArchived=?';
 
-        $this->parameters = ['iii', $userId, $userId, 0];
+        $this->parameters = ['iii', $userId, $userId, ParticipantStatus::ACTIVE->value];
 
         if ($fromTime !== null){
             $this->sql .= ' AND messages.createdAt<?';
