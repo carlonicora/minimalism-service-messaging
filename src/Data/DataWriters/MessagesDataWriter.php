@@ -1,7 +1,7 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\DataWriters;
 
-use CarloNicora\Minimalism\Abstracts\AbstractLoader;
+use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\DeletedMessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\MessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ParticipantsTable;
@@ -32,6 +32,7 @@ class MessagesDataWriter extends AbstractLoader
         );
 
         /** @see ParticipantsTable::updateThreadUnarchived() */
+        /** @noinspection UnusedFunctionResultInspection */
         $this->data->run(
             tableInterfaceClassName: ParticipantsTable::class,
             functionName: 'updateThreadUnarchived',
@@ -51,6 +52,7 @@ class MessagesDataWriter extends AbstractLoader
             'messageId' => $messageId
         ];
 
+        /** @noinspection UnusedFunctionResultInspection */
         $this->data->insert(
             tableInterfaceClassName: DeletedMessagesTable::class,
             records: $deletedMessage

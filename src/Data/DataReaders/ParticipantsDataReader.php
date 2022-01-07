@@ -1,7 +1,7 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\DataReaders;
 
-use CarloNicora\Minimalism\Abstracts\AbstractLoader;
+use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ParticipantsTable;
 
 class ParticipantsDataReader extends AbstractLoader

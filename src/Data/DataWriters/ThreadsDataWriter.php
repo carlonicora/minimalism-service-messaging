@@ -1,7 +1,7 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\DataWriters;
 
-use CarloNicora\Minimalism\Abstracts\AbstractLoader;
+use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\Enums\ParticipantStatus;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ParticipantsTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ThreadsTable;
@@ -32,6 +32,7 @@ class ThreadsDataWriter extends AbstractLoader
             ];
         }
 
+        /** @noinspection UnusedFunctionResultInspection */
         $this->data->insert(
             tableInterfaceClassName: ParticipantsTable::class,
             records: $participants
@@ -50,6 +51,7 @@ class ThreadsDataWriter extends AbstractLoader
     ): void
     {
         /** @See ParticipantsTable::updateThreadArchived() */
+        /** @noinspection UnusedFunctionResultInspection */
         $this->data->run(
             tableInterfaceClassName: ParticipantsTable::class,
             functionName: 'updateThreadArchived',
@@ -67,6 +69,7 @@ class ThreadsDataWriter extends AbstractLoader
     ): void
     {
         /** @See ParticipantsTable::updateThreadAsRead() */
+        /** @noinspection UnusedFunctionResultInspection */
         $this->data->run(
             tableInterfaceClassName: ParticipantsTable::class,
             functionName: 'updateThreadAsRead',

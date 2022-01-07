@@ -1,12 +1,12 @@
 {
   "name": "carlonicora/minimalism-service-messaging",
   "description": "Messaging service for minimalism",
-  "version": "1.0.14-beta5",
+  "version": "2.0.0",
   "homepage": "https://carlonicora.com",
   "time": "2021-03-25",
   "license": "MIT",
   "type": "library",
-  "minimum-stability": "beta",
+  "minimum-stability": "stable",
   "authors": [
     {
       "name": "Carlo Nicora",
@@ -22,10 +22,12 @@
     "ext-redis": "*",
     "carlonicora/jsonapi": "~3.0",
     "carlonicora/minimalism": "~13.0",
-    "carlonicora/minimalism-service-encrypter": "~3.0",
+    "carlonicora/minimalism-interface-data": "~1.0",
+    "carlonicora/minimalism-service-encrypter": "~4.0",
     "carlonicora/minimalism-service-mysql": "~5.0",
-    "carlonicora/minimalism-service-builder": "~1.0",
-    "carlonicora/minimalism-service-cacher": "~3.1"
+    "carlonicora/minimalism-service-builder": "~2.0",
+    "carlonicora/minimalism-service-cacher": "~4.0",
+    "carlonicora/minimalism-service-data-mapper": "~1.0"
   },
   "autoload": {
     "psr-4": {
@@ -35,10 +37,5 @@
   "require-dev": {
     "roave/security-advisories": "dev-master",
     "phpunit/phpunit": "^9"
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "CarloNicora\\Minimalism\\Services\\Messaging\\Tests\\": "tests/"
-    }
   }
 }
