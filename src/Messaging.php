@@ -1,5 +1,4 @@
-<?php /** @noinspection PropertyInitializationFlawsInspection */
-
+<?php
 namespace CarloNicora\Minimalism\Services\Messaging;
 
 use CarloNicora\JsonApi\Document;
