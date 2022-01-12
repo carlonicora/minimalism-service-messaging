@@ -1,5 +1,5 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Messaging\Data\Factories;
+namespace CarloNicora\Minimalism\Services\Messaging\Factories;
 
 use CarloNicora\Minimalism\Services\Cacher\Builders\CacheBuilder;
 use CarloNicora\Minimalism\Services\Cacher\Factories\CacheBuilderFactory;

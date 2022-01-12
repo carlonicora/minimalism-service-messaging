@@ -1,5 +1,5 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Messaging\Data\Builders;
+namespace CarloNicora\Minimalism\Services\Messaging\Builders;
 
 use CarloNicora\JsonApi\Objects\Link;
 use CarloNicora\Minimalism\Services\Builder\Abstracts\AbstractResourceBuilder;

@@ -1,14 +1,14 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Messaging\Data\ResourceReaders;
+namespace CarloNicora\Minimalism\Services\Messaging\Factories\Resources;
 
 use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Interfaces\Data\Interfaces\DataFunctionInterface;
 use CarloNicora\Minimalism\Interfaces\Data\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
-use CarloNicora\Minimalism\Services\Messaging\Data\Builders\MessageBuilder;
-use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\MessagesDataReader;
+use CarloNicora\Minimalism\Services\Messaging\Builders\MessageBuilder;
+use CarloNicora\Minimalism\Services\Messaging\IO\MessageIO;
 
-class MessagesResourceReader extends AbstractLoader
+class MessagesResourceFactory extends AbstractLoader
 {
     /**
      * @param int $threadId
@@ -22,12 +22,12 @@ class MessagesResourceReader extends AbstractLoader
         ?int $fromMessageId=null,
     ): array
     {
-        /** @see MessagesDataReader::byThreadId() */
+        /** @see MessageIO::byThreadId() */
         return $this->builder->build(
             resourceTransformerClass: MessageBuilder::class,
             function: new DataFunction(
                 type: DataFunctionInterface::TYPE_LOADER,
-                className: MessagesDataReader::class,
+                className: MessageIO::class,
                 functionName: 'byThreadId',
                 parameters: [$threadId, $userId, $fromMessageId]
             ),
@@ -43,13 +43,13 @@ class MessagesResourceReader extends AbstractLoader
         int $messageId,
     ): ResourceObject
     {
-        /** @see MessagesDataReader::byMessageId() */
+        /** @see MessageIO::byMessageId() */
         return current(
             $this->builder->build(
                 resourceTransformerClass: MessageBuilder::class,
                 function: new DataFunction(
                     type: DataFunctionInterface::TYPE_LOADER,
-                    className: MessagesDataReader::class,
+                    className: MessageIO::class,
                     functionName: 'byMessageId',
                     parameters: [$messageId]
                 ),
@@ -68,12 +68,12 @@ class MessagesResourceReader extends AbstractLoader
         int $lastChecked,
     ): array
     {
-        /** @see MessagesDataReader::newByUserId() */
+        /** @see MessageIO::newByUserId() */
         return $this->builder->build(
             resourceTransformerClass: MessageBuilder::class,
             function: new DataFunction(
                 type: DataFunctionInterface::TYPE_LOADER,
-                className: MessagesDataReader::class,
+                className: MessageIO::class,
                 functionName: 'newByUserId',
                 parameters: [$userId, $lastChecked]
             ),

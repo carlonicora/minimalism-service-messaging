@@ -1,13 +1,13 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Messaging\Data\Builders;
+namespace CarloNicora\Minimalism\Services\Messaging\Builders;
 
 use CarloNicora\JsonApi\Objects\Link;
 use CarloNicora\Minimalism\Interfaces\Data\Interfaces\DataFunctionInterface;
 use CarloNicora\Minimalism\Interfaces\Data\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\Builder\Abstracts\AbstractResourceBuilder;
 use CarloNicora\Minimalism\Services\Builder\Objects\RelationshipBuilder;
-use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\ThreadsDataReader;
-use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\UsersDataReader;
+use CarloNicora\Minimalism\Services\Messaging\IO\ParticipantIO;
+use CarloNicora\Minimalism\Services\Messaging\IO\ThreadIO;
 use Exception;
 
 /**
@@ -114,25 +114,25 @@ class MessageBuilder extends AbstractResourceBuilder
     {
         $response = [];
 
-        /** @see UsersDataReader::byUserId() */
+        /** @see ParticipantIO::byUserId() */
         $response[] = new RelationshipBuilder(
             name: 'sender',
             builderClassName: UserBuilder::class,
             function: new DataFunction(
                 type: DataFunctionInterface::TYPE_LOADER,
-                className: UsersDataReader::class,
+                className: ParticipantIO::class,
                 functionName: 'byUserId',
                 parameters: ['userId']
             )
         );
 
-        /** @see ThreadsDataReader::byMessageId() */
+        /** @see ThreadIO::byMessageId() */
         $response[] = new RelationshipBuilder(
             name: 'thread',
             builderClassName: ThreadBuilder::class,
             function: new DataFunction(
                 type: DataFunctionInterface::TYPE_LOADER,
-                className: ThreadsDataReader::class,
+                className: ThreadIO::class,
                 functionName: 'byMessageId',
                 parameters: ['messageId']
             )

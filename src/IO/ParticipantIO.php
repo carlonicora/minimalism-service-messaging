@@ -1,20 +1,18 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Messaging\Data\DataReaders;
+namespace CarloNicora\Minimalism\Services\Messaging\IO;
 
 use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
-use CarloNicora\Minimalism\Services\Messaging\Data\Databases\Messaging\Tables\ParticipantsTable;
-use CarloNicora\Minimalism\Services\Messaging\Data\Factories\MessagingCacheFactory;
+use CarloNicora\Minimalism\Services\Messaging\Databases\Messaging\Tables\ParticipantsTable;
+use CarloNicora\Minimalism\Services\Messaging\Factories\MessagingCacheFactory;
 use JetBrains\PhpStorm\ArrayShape;
 
-class UsersDataReader extends AbstractLoader
+class ParticipantIO extends AbstractLoader
 {
     /**
      * @param int $threadId
      * @return array
      */
-    public function byThreadId(
-        int $threadId
-    ): array
+    public function byThreadId(int $threadId): array
     {
         $cacheFactory = new MessagingCacheFactory();
 

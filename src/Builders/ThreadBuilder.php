@@ -1,5 +1,5 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Messaging\Data\Builders;
+namespace CarloNicora\Minimalism\Services\Messaging\Builders;
 
 use CarloNicora\JsonApi\Objects\Link;
 use CarloNicora\JsonApi\Objects\Meta;
@@ -7,7 +7,7 @@ use CarloNicora\Minimalism\Interfaces\Data\Interfaces\DataFunctionInterface;
 use CarloNicora\Minimalism\Interfaces\Data\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\Builder\Abstracts\AbstractResourceBuilder;
 use CarloNicora\Minimalism\Services\Builder\Objects\RelationshipBuilder;
-use CarloNicora\Minimalism\Services\Messaging\Data\DataReaders\UsersDataReader;
+use CarloNicora\Minimalism\Services\Messaging\IO\ParticipantIO;
 use Exception;
 
 /**
@@ -117,13 +117,13 @@ class ThreadBuilder extends AbstractResourceBuilder
     {
         $response = [];
 
-        /** @see UsersDataReader::byThreadId() */
+        /** @see ParticipantIO::byThreadId() */
         $response[] = new RelationshipBuilder(
             name: 'members',
             builderClassName: UserBuilder::class,
             function: new DataFunction(
                 type: DataFunctionInterface::TYPE_LOADER,
-                className: UsersDataReader::class,
+                className: ParticipantIO::class,
                 functionName: 'byThreadId',
                 parameters: ['threadId']
             )
