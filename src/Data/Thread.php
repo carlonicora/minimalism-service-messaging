@@ -1,30 +1,12 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data;
 
-use CarloNicora\Minimalism\Factories\ObjectFactory;
 use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractDataObject;
 
 class Thread extends AbstractDataObject
 {
     /** @var int  */
     private int $id;
-
-    /**
-     * @param ObjectFactory $objectFactory
-     * @param array|null $data
-     */
-    public function __construct(
-        ObjectFactory $objectFactory,
-        ?array $data = null,
-    )
-    {
-        if ($data !== null) {
-            parent::__construct(
-                objectFactory: $objectFactory,
-                data: $data,
-            );
-        }
-    }
 
     /**
      * @param array $data
