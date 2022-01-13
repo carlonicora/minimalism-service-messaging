@@ -10,6 +10,20 @@ class MessagingCacheFactory extends CacheBuilderFactory
      * @param int $threadId
      * @return CacheBuilder
      */
+    public function thread(
+        int $threadId,
+    ): CacheBuilder
+    {
+        return $this->create(
+            cacheName: 'threadId',
+            identifier: $threadId,
+        );
+    }
+
+    /**
+     * @param int $threadId
+     * @return CacheBuilder
+     */
     public function threadParticipants(
         int $threadId
     ): CacheBuilder
