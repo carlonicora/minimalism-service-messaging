@@ -1,7 +1,7 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data;
 
-use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractDataObject;
+use CarloNicora\Minimalism\Interfaces\Data\Abstracts\AbstractDataObject;
 
 class Message extends AbstractDataObject
 {
