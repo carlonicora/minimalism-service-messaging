@@ -2,7 +2,6 @@
 namespace CarloNicora\Minimalism\Services\Messaging\IO;
 
 use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
-use CarloNicora\Minimalism\Services\DataMapper\Exceptions\RecordNotFoundException;
 use CarloNicora\Minimalism\Services\Messaging\Data\Message;
 use CarloNicora\Minimalism\Services\Messaging\Databases\Messaging\Tables\DeletedMessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Databases\Messaging\Tables\MessagesTable;
@@ -54,7 +53,7 @@ class MessageIO extends AbstractLoader
     /**
      * @param int $messageId
      * @return array
-     * @throws RecordNotFoundException
+     * @throws Exception
      */
     public function byMessageId(
         int $messageId

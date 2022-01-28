@@ -2,7 +2,6 @@
 namespace CarloNicora\Minimalism\Services\Messaging\IO;
 
 use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
-use CarloNicora\Minimalism\Services\DataMapper\Exceptions\RecordNotFoundException;
 use CarloNicora\Minimalism\Services\Messaging\Data\Thread;
 use CarloNicora\Minimalism\Services\Messaging\Databases\Messaging\Tables\Enums\ParticipantStatus;
 use CarloNicora\Minimalism\Services\Messaging\Databases\Messaging\Tables\ParticipantsTable;
@@ -21,15 +20,13 @@ class ThreadIO extends AbstractLoader
         int $threadId,
     ): Thread
     {
-        $cacheFactory = new MessagingCacheFactory();
-
         /** @see ThreadsTable::readById() */
         return $this->returnSingleObject(
             recordset: $this->data->read(
                 tableInterfaceClassName: ThreadsTable::class,
                 functionName: 'readById',
                 parameters: [$threadId],
-                cacheBuilder: $cacheFactory->thread($threadId),
+                cacheBuilder: MessagingCacheFactory::thread($threadId),
             ),
             objectType: Thread::class,
         );
@@ -68,7 +65,7 @@ class ThreadIO extends AbstractLoader
     /**
      * @param int $messageId
      * @return array
-     * @throws RecordNotFoundException
+     * @throws Exception
      */
     public function byMessageId(
         int $messageId
@@ -87,7 +84,7 @@ class ThreadIO extends AbstractLoader
      * @param int $userId1
      * @param int $userId2
      * @return array
-     * @throws RecordNotFoundException
+     * @throws Exception
      */
     public function getDialogThread(
         int $userId1,

@@ -10,11 +10,11 @@ class MessagingCacheFactory extends CacheBuilderFactory
      * @param int $threadId
      * @return CacheBuilder
      */
-    public function thread(
+    public static function thread(
         int $threadId,
     ): CacheBuilder
     {
-        return $this->create(
+        return self::create(
             cacheName: 'threadId',
             identifier: $threadId,
         );
@@ -24,11 +24,11 @@ class MessagingCacheFactory extends CacheBuilderFactory
      * @param int $threadId
      * @return CacheBuilder
      */
-    public function threadParticipants(
+    public static function threadParticipants(
         int $threadId
     ): CacheBuilder
     {
-        return $this->createList(
+        return self::createList(
             listName: 'userId',
             cacheName: 'threadId',
             identifier: $threadId,

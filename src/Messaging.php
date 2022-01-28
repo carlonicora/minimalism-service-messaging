@@ -4,7 +4,6 @@ namespace CarloNicora\Minimalism\Services\Messaging;
 use CarloNicora\JsonApi\Document;
 use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Abstracts\AbstractService;
-use CarloNicora\Minimalism\Services\DataMapper\Exceptions\RecordNotFoundException;
 use CarloNicora\Minimalism\Services\Messaging\Factories\Resources\MessagesResourceFactory;
 use CarloNicora\Minimalism\Services\Messaging\Factories\Resources\ThreadsResourceFactory;
 use CarloNicora\Minimalism\Services\Messaging\IO\MessageIO;
@@ -35,7 +34,7 @@ class Messaging extends AbstractService
                     userId2: $userId2
                 )
             );
-        } catch (RecordNotFoundException) {
+        } catch (Exception) {
             $newThreadId = $this->objectFactory->create(ThreadIO::class)?->create(
                 userIds: [$userId1, $userId2]
             );

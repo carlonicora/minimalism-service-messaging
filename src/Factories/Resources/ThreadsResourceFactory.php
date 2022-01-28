@@ -5,10 +5,10 @@ use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Interfaces\Data\Interfaces\DataFunctionInterface;
 use CarloNicora\Minimalism\Interfaces\Data\Objects\DataFunction;
 use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
-use CarloNicora\Minimalism\Services\DataMapper\Exceptions\RecordNotFoundException;
 use CarloNicora\Minimalism\Services\Messaging\Builders\ThreadBuilder;
 use CarloNicora\Minimalism\Services\Messaging\Databases\Messaging\Tables\ThreadsTable;
 use CarloNicora\Minimalism\Services\Messaging\IO\ThreadIO;
+use Exception;
 
 class ThreadsResourceFactory extends AbstractLoader
 {
@@ -56,8 +56,7 @@ class ThreadsResourceFactory extends AbstractLoader
      * @param int $userId1
      * @param int $userId2
      * @return ResourceObject
-     * @throws RecordNotFoundException
-     * @noinspection PhpDocRedundantThrowsInspection
+     * @throws Exception
      */
     public function getDialogThread(
         int $userId1,

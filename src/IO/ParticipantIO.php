@@ -14,14 +14,12 @@ class ParticipantIO extends AbstractLoader
      */
     public function byThreadId(int $threadId): array
     {
-        $cacheFactory = new MessagingCacheFactory();
-
         /** @see ParticipantsTable::readByThreadId() */
         return $this->data->read(
             tableInterfaceClassName: ParticipantsTable::class,
             functionName: 'readByThreadId',
             parameters: [$threadId],
-            cacheBuilder: $cacheFactory->threadParticipants($threadId)
+            cacheBuilder: MessagingCacheFactory::threadParticipants($threadId)
         );
     }
 
