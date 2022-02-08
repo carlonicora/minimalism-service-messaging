@@ -21,13 +21,15 @@ class ThreadsTable extends AbstractMySqlTable
 
     /**
      * @param int $userId
-     * @param int|null $fromTime
+     * @param int $offset
+     * @param int $limit
      * @return array
      * @throws Exception
      */
     public function readByUserId(
         int $userId,
-        int $fromTime=null,
+        int $offset,
+        int $limit
     ): array
     {
         $this->sql = 'SELECT threads.threadId, messages.createdAt, messages.content, count(msgs.messageId) as unread'
@@ -35,19 +37,12 @@ class ThreadsTable extends AbstractMySqlTable
             . ' JOIN messages ON messages.messageId=(SELECT messages.messageId FROM messages WHERE messages.threadId=threads.threadId ORDER BY messages.createdAt DESC LIMIT 1)'
             . ' JOIN participants ON threads.threadId=participants.threadId'
             . ' LEFT JOIN messages msgs ON msgs.threadId=threads.threadId AND msgs.userId!=? AND msgs.createdAt>=participants.lastActivity'
-            . ' WHERE participants.userId=? AND participants.isArchived=?';
-
-        $this->parameters = ['iii', $userId, $userId, ParticipantStatus::Active->value];
-
-        if ($fromTime !== null){
-            $this->sql .= ' AND messages.createdAt<?';
-            $this->parameters[0] .= 's';
-            $this->parameters[] = date('Y-m-d H:i:s', $fromTime);
-        }
-
-        $this->sql .= ' GROUP BY threads.threadId, messages.createdAt, messages.content'
+            . ' WHERE participants.userId=? AND participants.isArchived=?'
+            . ' GROUP BY threads.threadId, messages.createdAt, messages.content'
             . ' ORDER BY messages.createdAt DESC'
-            . ' LIMIT 0,25;';
+            . ' LIMIT ?,?;';
+
+        $this->parameters = ['iiiii', $userId, $userId, ParticipantStatus::Active->value, $offset, $limit];
 
         return $this->functions->runRead();
     }
