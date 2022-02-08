@@ -8,10 +8,10 @@ use Exception;
 class MessagesTable extends AbstractMySqlTable
 {
     /** @var string */
-    protected string $tableName = 'messages';
+    protected static string $tableName = 'messages';
 
     /** @var array  */
-    protected array $fields = [
+    protected static array $fields = [
         'messageId'     => FieldInterface::INTEGER
             +  FieldInterface::PRIMARY_KEY
             +  FieldInterface::AUTO_INCREMENT,

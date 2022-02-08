@@ -8,10 +8,10 @@ use Exception;
 class ParticipantsTable extends AbstractMySqlTable
 {
     /** @var string */
-    protected string $tableName = 'participants';
+    protected static string $tableName = 'participants';
 
     /** @var array  */
-    protected array $fields = [
+    protected static array $fields = [
         'threadId'      => FieldInterface::INTEGER
                         +  FieldInterface::PRIMARY_KEY,
         'userId'        => FieldInterface::STRING
