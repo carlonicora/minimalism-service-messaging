@@ -176,22 +176,25 @@ class Messaging implements ServiceInterface
 
     /**
      * @param int $userId
-     * @param int|null $fromTime
+     * @param int $offset
+     * @param int $limit
      * @return Document
      * @throws Exception
      */
     public function getThreadsList(
         int $userId,
-        int $fromTime=null,
+        int $offset,
+        int $limit
     ): Document
     {
         $response = new Document();
 
         $response->addResourceList(
             resourceList: $this->getReadThreadsResources()->byUserId(
-            userId: $userId,
-            fromTime: $fromTime
-        )
+                userId: $userId,
+                offset: $offset,
+                limit: $limit
+            ),
         );
 
         return $response;

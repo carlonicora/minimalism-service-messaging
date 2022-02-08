@@ -9,19 +9,25 @@ class ThreadsDataReader extends AbstractLoader
 {
     /**
      * @param int $userId
-     * @param int|null $fromTime
+     * @param int $offset
+     * @param int $limit
      * @return array
      */
     public function byUserId(
         int $userId,
-        ?int $fromTime=null
+        int $offset,
+        int $limit
     ): array
     {
         /** @see ThreadsTable::readByUserId() */
         return $this->data->read(
             tableInterfaceClassName: ThreadsTable::class,
             functionName: 'readByUserId',
-            parameters: [$userId, $fromTime],
+            parameters: [
+                'userId' => $userId,
+                'offset' => $offset,
+                'limit' => $limit
+            ],
         );
     }
 

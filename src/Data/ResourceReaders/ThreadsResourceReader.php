@@ -32,12 +32,14 @@ class ThreadsResourceReader extends AbstractLoader
 
     /**
      * @param int $userId
-     * @param int|null $fromTime
+     * @param int $offset
+     * @param int $limit
      * @return array
      */
     public function byUserId(
         int $userId,
-        int $fromTime=null,
+        int $offset,
+        int $limit
     ): array
     {
         /** @see ThreadsDataReader::byUserId() */
@@ -47,7 +49,11 @@ class ThreadsResourceReader extends AbstractLoader
                 type: DataFunctionInterface::TYPE_LOADER,
                 className: ThreadsDataReader::class,
                 functionName: 'byUserId',
-                parameters: [$userId, $fromTime]
+                parameters: [
+                    'userId' => $userId,
+                    'offset' => $offset,
+                    'limit' => $limit
+                ]
             )
         );
     }
