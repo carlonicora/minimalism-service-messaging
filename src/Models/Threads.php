@@ -4,8 +4,8 @@ namespace CarloNicora\Minimalism\Services\Messaging\Models;
 use CarloNicora\Minimalism\Enums\HttpCode;
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Encrypter\Interfaces\EncrypterInterface;
-use CarloNicora\Minimalism\Services\Messaging\Abstracts\AbstractMessagingModel;
 use CarloNicora\Minimalism\Services\Messaging\Messaging;
+use CarloNicora\Minimalism\Services\Messaging\Models\Abstracts\AbstractMessagingModel;
 use Exception;
 use RuntimeException;
 

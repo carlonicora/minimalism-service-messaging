@@ -4,11 +4,12 @@ namespace CarloNicora\Minimalism\Services\Messaging;
 use CarloNicora\JsonApi\Document;
 use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Abstracts\AbstractService;
-use CarloNicora\Minimalism\Services\Messaging\Factories\Resources\MessagesResourceFactory;
-use CarloNicora\Minimalism\Services\Messaging\Factories\Resources\ThreadsResourceFactory;
-use CarloNicora\Minimalism\Services\Messaging\IO\MessageIO;
-use CarloNicora\Minimalism\Services\Messaging\IO\ParticipantIO;
-use CarloNicora\Minimalism\Services\Messaging\IO\ThreadIO;
+use CarloNicora\Minimalism\Services\Messaging\Data\Messages\DataObjects\Message;
+use CarloNicora\Minimalism\Services\Messaging\Data\Messages\Factories\MessagesResourceFactory;
+use CarloNicora\Minimalism\Services\Messaging\Data\Messages\IO\MessageIO;
+use CarloNicora\Minimalism\Services\Messaging\Data\Participants\IO\ParticipantIO;
+use CarloNicora\Minimalism\Services\Messaging\Data\Threads\Factories\ThreadsResourceFactory;
+use CarloNicora\Minimalism\Services\Messaging\Data\Threads\IO\ThreadIO;
 use Exception;
 use RuntimeException;
 
@@ -80,7 +81,7 @@ class Messaging extends AbstractService
         $response = new Document();
 
         $response->addResourceList(
-            resourceList: $this->objectFactory->create(MessagesResourceFactory::class)?->byThreadId(
+            resourceList: $this->objectFactory->create(MessagesResourceFactory::class)?->readByThreadId(
                 threadId: $threadId,
                 userId: $userId,
                 fromMessageId: $fromMessageId
@@ -102,7 +103,7 @@ class Messaging extends AbstractService
         $response = new Document();
 
         $response->addResource(
-            resource: $this->objectFactory->create(MessagesResourceFactory::class)?->byMessageId(
+            resource: $this->objectFactory->create(MessagesResourceFactory::class)?->readByMessageId(
                 messageId: $messageId
             ),
         );
@@ -158,13 +159,16 @@ class Messaging extends AbstractService
             throw new RuntimeException('User is not a thread participant', 403);
         }
 
+        $message = new Message();
+        $message->setUserId($userIdSender);
+        $message->setThreadId($threadId);
+        $message->setContent($content);
+
         $messageId = $this->objectFactory->create(MessageIO::class)?->create(
-            userIdSender: $userIdSender,
-            threadId: $threadId,
-            content: $content
+            message: $message,
         );
 
-        return $this->objectFactory->create(MessagesResourceFactory::class)?->byMessageId($messageId);
+        return $this->objectFactory->create(MessagesResourceFactory::class)?->readByMessageId($messageId);
     }
 
     /**
