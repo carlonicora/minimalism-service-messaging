@@ -10,10 +10,47 @@ use CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases\Partic
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\Databases\ThreadsTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\DataObjects\Thread;
 use CarloNicora\Minimalism\Services\MySQL\Enums\FieldType;
+use CarloNicora\Minimalism\Services\MySQL\Factories\SqlJoinFactory;
 use CarloNicora\Minimalism\Services\MySQL\Factories\SqlQueryFactory;
 
 class ThreadIO extends AbstractMessagingIO
 {
+
+    /**
+     * @param int $threadId
+     * @return Thread
+     * @throws MinimalismException
+     */
+    public function readByThreadId(
+        int $threadId
+    ): Thread
+    {
+        // We use this method in notifier
+        return $this->data->read(
+            queryFactory: SqlQueryFactory::create(tableClass: ThreadsTable::class)
+                ->addParameter(field: ThreadsTable::threadId, value: $threadId),
+            responseType: Thread::class
+        );
+    }
+
+    /**
+     * @param int $messageId
+     * @return Thread
+     * @throws MinimalismException
+     */
+    public function readByMessageId(
+        int $messageId
+    ): Thread
+    {
+        // We use this method in notifier
+        return $this->data->read(
+            queryFactory: SqlQueryFactory::create(tableClass: ThreadsTable::class)
+                ->addJoin(new SqlJoinFactory(primaryKey: ThreadsTable::threadId, foreignKey: MessagesTable::threadId))
+                ->addParameter(field: MessagesTable::messageId, value: $messageId),
+            responseType: Thread::class
+        );
+    }
+
     /**
      * @param int $userId
      * @param int|null $fromTime
