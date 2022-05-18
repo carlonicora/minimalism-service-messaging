@@ -4,6 +4,8 @@ namespace CarloNicora\Minimalism\Services\Messaging;
 use CarloNicora\JsonApi\Document;
 use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Abstracts\AbstractService;
+use CarloNicora\Minimalism\Enums\HttpCode;
+use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\DataObjects\Message;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\Factories\MessagesResourceFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\IO\MessageIO;
@@ -11,7 +13,6 @@ use CarloNicora\Minimalism\Services\Messaging\Data\Participants\IO\ParticipantIO
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\Factories\ThreadsResourceFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\IO\ThreadIO;
 use Exception;
-use RuntimeException;
 
 class Messaging extends AbstractService
 {
@@ -30,18 +31,18 @@ class Messaging extends AbstractService
 
         try {
             $response->addResource(
-                $this->objectFactory->create(ThreadsResourceFactory::class)?->getDialogThread(
+                $this->objectFactory->create(className: ThreadsResourceFactory::class)?->getDialogThread(
                     userId1: $userId1,
                     userId2: $userId2
                 )
             );
         } catch (Exception) {
-            $newThreadId = $this->objectFactory->create(ThreadIO::class)?->create(
+            $newThreadId = $this->objectFactory->create(className: ThreadIO::class)?->insert(
                 userIds: [$userId1, $userId2]
             );
 
             $response->addResource(
-                $this->objectFactory->create(ThreadsResourceFactory::class)?->byId($newThreadId)
+                $this->objectFactory->create(className: ThreadsResourceFactory::class)?->byId($newThreadId)
             );
         }
 
@@ -59,7 +60,7 @@ class Messaging extends AbstractService
         int $fromTime=null,
     ): array
     {
-        return $this->objectFactory->create(ThreadsResourceFactory::class)?->byUserId(
+        return $this->objectFactory->create(className: ThreadsResourceFactory::class)?->byUserId(
             userId: $userId,
             fromTime: $fromTime
         );
@@ -81,7 +82,7 @@ class Messaging extends AbstractService
         $response = new Document();
 
         $response->addResourceList(
-            resourceList: $this->objectFactory->create(MessagesResourceFactory::class)?->readByThreadId(
+            resourceList: $this->objectFactory->create(className: MessagesResourceFactory::class)?->readByThreadId(
                 threadId: $threadId,
                 userId: $userId,
                 fromMessageId: $fromMessageId
@@ -103,7 +104,7 @@ class Messaging extends AbstractService
         $response = new Document();
 
         $response->addResource(
-            resource: $this->objectFactory->create(MessagesResourceFactory::class)?->readByMessageId(
+            resource: $this->objectFactory->create(className: MessagesResourceFactory::class)?->readByMessageId(
                 messageId: $messageId
             ),
         );
@@ -126,7 +127,7 @@ class Messaging extends AbstractService
     {
         $userIds[] = $userIdSender;
 
-        $threadId = $this->objectFactory->create(ThreadIO::class)?->create(
+        $threadId = $this->objectFactory->create(className: ThreadIO::class)?->insert(
             userIds: $userIds
         );
 
@@ -137,7 +138,7 @@ class Messaging extends AbstractService
             content: $content
         );
 
-        return $this->objectFactory->create(ThreadsResourceFactory::class)?->byId($threadId);
+        return $this->objectFactory->create(className: ThreadsResourceFactory::class)?->byId($threadId);
     }
 
     /**
@@ -156,7 +157,7 @@ class Messaging extends AbstractService
         $participants = $this->objectFactory->create(ParticipantIO::class)?->byThreadId($threadId);
         $participantIds = array_column($participants, 'userId');
         if (!in_array($userIdSender, $participantIds, true)) {
-            throw new RuntimeException('User is not a thread participant', 403);
+            throw new MinimalismException(status: HttpCode::Forbidden, message: 'User is not a thread participant');
         }
 
         $message = new Message();
@@ -164,11 +165,11 @@ class Messaging extends AbstractService
         $message->setThreadId($threadId);
         $message->setContent($content);
 
-        $messageId = $this->objectFactory->create(MessageIO::class)?->create(
+        $messageId = $this->objectFactory->create(className: MessageIO::class)?->insert(
             message: $message,
         );
 
-        return $this->objectFactory->create(MessagesResourceFactory::class)?->readByMessageId($messageId);
+        return $this->objectFactory->create(className: MessagesResourceFactory::class)?->readByMessageId($messageId);
     }
 
     /**
@@ -181,12 +182,12 @@ class Messaging extends AbstractService
         int $messageId
     ): void
     {
-        $message = $this->objectFactory->create(MessageIO::class)?->byMessageId($messageId);
+        $message = $this->objectFactory->create(className: MessageIO::class)?->byMessageId($messageId);
         if ($message['userId'] !== $userId) {
-            throw new RuntimeException('The current user has no access to a message', 403);
+            throw new MinimalismException(status: HttpCode::Forbidden, message: 'The current user has no access to a message');
         }
 
-        $this->objectFactory->create(MessageIO::class)?->delete(
+        $this->objectFactory->create(className: MessageIO::class)?->deleteByUserIdMessageId(
             userId: $userId,
             messageId: $messageId
         );
@@ -202,7 +203,7 @@ class Messaging extends AbstractService
         int $userId,
     ): void
     {
-        $this->objectFactory->create(ThreadIO::class)?->archive(
+        $this->objectFactory->create(className: ThreadIO::class)?->archive(
             threadId: $threadId,
             userId: $userId
         );
@@ -218,7 +219,7 @@ class Messaging extends AbstractService
         int $threadId,
     ): void
     {
-        $this->objectFactory->create(ThreadIO::class)?->markAsRead(
+        $this->objectFactory->create(className: ThreadIO::class)?->markAsRead(
             userId: $userId,
             threadId: $threadId
         );
@@ -233,7 +234,7 @@ class Messaging extends AbstractService
         int $userId
     ): int
     {
-        return $this->objectFactory->create(ThreadIO::class)?->countByUserId(
+        return $this->objectFactory->create(className: ThreadIO::class)?->countByUserId(
             userId: $userId
         );
     }

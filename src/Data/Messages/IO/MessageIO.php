@@ -122,7 +122,7 @@ class MessageIO extends AbstractMessagingIO
      * @throws MinimalismException
      * @throws Exception
      */
-    public function create(
+    public function insert(
         Message $message,
     ): int
     {
@@ -142,7 +142,7 @@ class MessageIO extends AbstractMessagingIO
      * @return void
      * @throws MinimalismException
      */
-    public function delete(
+    public function deleteByUserIdMessageId(
         int $userId,
         int $messageId,
     ): void

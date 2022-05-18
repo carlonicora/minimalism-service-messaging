@@ -159,7 +159,7 @@ class ThreadIO extends AbstractMessagingIO
      * @return int
      * @throws MinimalismException
      */
-    public function create(
+    public function insert(
         array $userIds
     ): int
     {

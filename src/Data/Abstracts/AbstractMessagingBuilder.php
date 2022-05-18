@@ -16,11 +16,12 @@ abstract class AbstractMessagingBuilder extends AbstractResourceBuilder
      * @param Users $users
      */
     public function __construct(
-        protected ObjectFactory $objectFactory,
-        protected Path $path,
-        protected EncrypterInterface $encrypter,
-        protected Users $users,
+        protected ObjectFactory               $objectFactory,
+        protected Path                        $path,
+        protected readonly EncrypterInterface $encrypter,
+        protected Users                       $users,
     )
     {
+        parent::__construct($this->encrypter);
     }
 }
