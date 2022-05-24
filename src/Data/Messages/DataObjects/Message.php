@@ -1,4 +1,5 @@
 <?php
+
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Messages\DataObjects;
 
 use CarloNicora\Minimalism\Interfaces\Sql\Attributes\DbField;
@@ -14,56 +15,91 @@ class Message implements SqlDataObjectInterface, ResourceableDataInterface
 {
     use SqlDataObjectTrait;
 
-    /** @var int  */
+    /** @var int */
     #[DbField(field: MessagesTable::messageId)]
     private int $id;
 
-    /** @var int  */
+    /** @var int */
     #[DbField]
     private int $threadId;
 
-    /** @var int  */
+    /** @var int */
     #[DbField]
     private int $userId;
 
-        /** @var string  */
+    /** @var string */
     #[DbField]
     private string $content;
 
-    /** @var int  */
+    /** @var int */
     #[DbField(fieldType: DbFieldType::IntDateTime)]
     private int $createdAt;
 
     #[DbField]
-    private bool $unread=false;
+    private bool $unread = false;
 
     /** @return int */
-    public function getId(): int{return $this->id;}
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     /** @param int $id */
-    public function setId(int $id): void{$this->id = $id;}
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
 
     /** @return int */
-    public function getThreadId(): int{return $this->threadId;}
+    public function getThreadId(): int
+    {
+        return $this->threadId;
+    }
 
     /** @param int $threadId */
-    public function setThreadId(int $threadId): void{$this->threadId = $threadId;}
+    public function setThreadId(int $threadId): void
+    {
+        $this->threadId = $threadId;
+    }
 
     /** @return int */
-    public function getUserId(): int{return $this->userId;}
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
 
     /** @param int $userId */
-    public function setUserId(int $userId): void{$this->userId = $userId;}
+    public function setUserId(int $userId): void
+    {
+        $this->userId = $userId;
+    }
 
     /** @return string */
-    public function getContent(): string{return $this->content;}
+    public function getContent(): string
+    {
+        return $this->content;
+    }
 
     /** @param string $content */
-    public function setContent(string $content): void{$this->content = $content;}
+    public function setContent(string $content): void
+    {
+        $this->content = $content;
+    }
 
     /** @return int */
-    public function getCreatedAt(): int{return $this->createdAt;}
+    public function getCreatedAt(): int
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(int $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
 
     /** @return bool */
-    public function isUnread(): bool{return $this->unread;}
+    public function isUnread(): bool
+    {
+        return $this->unread;
+    }
 }

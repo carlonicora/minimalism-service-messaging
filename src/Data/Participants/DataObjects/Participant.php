@@ -26,9 +26,9 @@ class Participant implements SqlDataObjectInterface
     #[DbField(fieldType: DbFieldType::Bool)]
     private bool $isArchived;
 
-    /** @var int */
+    /** @var int|null */
     #[DbField(fieldType: DbFieldType::IntDateTime)]
-    private int $lastActivity;
+    private ?int $lastActivity = null;
 
     /**
      * @return int
@@ -79,17 +79,20 @@ class Participant implements SqlDataObjectInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getLastActivity(): int
+    public function getLastActivity(): ?int
     {
         return $this->lastActivity;
     }
 
     /**
-     * @param int $lastActivity
+     * @param int|null $lastActivity
+     * @return void
      */
-    public function setLastActivity(int $lastActivity): void
+    public function setLastActivity(
+        int $lastActivity = null
+    ): void
     {
         $this->lastActivity = $lastActivity;
     }
