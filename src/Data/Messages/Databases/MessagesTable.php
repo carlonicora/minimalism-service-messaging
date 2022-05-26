@@ -6,7 +6,7 @@ use CarloNicora\Minimalism\Services\MySQL\Data\SqlTable;
 use CarloNicora\Minimalism\Services\MySQL\Enums\FieldOption;
 use CarloNicora\Minimalism\Services\MySQL\Enums\FieldType;
 
-#[SqlTable(name: 'deleted_messages', databaseIdentifier: 'Messaging')]
+#[SqlTable(name: 'messages', databaseIdentifier: 'Messaging')]
 enum MessagesTable
 {
     #[SqlField(fieldType: FieldType::Integer,fieldOption: FieldOption::AutoIncrement)]
