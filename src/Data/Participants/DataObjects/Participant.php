@@ -24,7 +24,7 @@ class Participant implements SqlDataObjectInterface
 
     /** @var bool */
     #[DbField(fieldType: DbFieldType::Bool)]
-    private bool $isArchived;
+    private bool $isArchived = false;
 
     /** @var int|null */
     #[DbField(fieldType: DbFieldType::IntDateTime)]
