@@ -20,13 +20,13 @@ class Thread implements SqlDataObjectInterface, ResourceableDataInterface
     private int $id;
 
     #[DbField(fieldType: DbFieldType::IntDateTime)]
-    private ?int $createdAt=null;
+    private int|null $createdAt=null;
 
     #[DbField]
-    private ?string $content=null;
+    private string|null $content=null;
 
     #[DbField]
-    private ?string $unread=null;
+    private string|null $unread=null;
 
     /** @var User[]  */
     private array $users=[];
@@ -38,13 +38,13 @@ class Thread implements SqlDataObjectInterface, ResourceableDataInterface
     public function setId(int $id): void{$this->id = $id;}
 
     /** @return int|null */
-    public function getLastMessageTime(): ?int{return $this->createdAt;}
+    public function getLastMessageTime(): int|null{return $this->createdAt;}
 
     /** @return string|null */
-    public function getLastMessage(): ?string{return $this->content;}
+    public function getLastMessage(): string|null{return $this->content;}
 
     /** @return string|null */
-    public function getUnreadMessages(): ?string{return $this->unread;}
+    public function getUnreadMessages(): string|null{return $this->unread;}
 
     /** @return User[] */
     public function getUsers(): array{return $this->users;}

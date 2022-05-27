@@ -1,6 +1,6 @@
 <?php
 
-namespace CarloNicora\Minimalism\Services\Messaging\Data\Participants\DataObject;
+namespace CarloNicora\Minimalism\Services\Messaging\Data\Participants\DataObjects;
 
 use CarloNicora\Minimalism\Interfaces\Sql\Attributes\DbField;
 use CarloNicora\Minimalism\Interfaces\Sql\Attributes\DbTable;
@@ -28,7 +28,7 @@ class Participant implements SqlDataObjectInterface
 
     /** @var int|null */
     #[DbField(fieldType: DbFieldType::IntDateTime)]
-    private ?int $lastActivity = null;
+    private int|null $lastActivity = null;
 
     /**
      * @return int
@@ -81,7 +81,7 @@ class Participant implements SqlDataObjectInterface
     /**
      * @return int|null
      */
-    public function getLastActivity(): ?int
+    public function getLastActivity(): int|null
     {
         return $this->lastActivity;
     }
