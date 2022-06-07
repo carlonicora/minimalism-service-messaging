@@ -20,9 +20,8 @@ class ParticipantIO extends AbstractMessagingIO
     ): array
     {
         return $this->data->read(
-            queryFactory: SqlQueryFactory::create(ParticipantsTable::class)
-                ->selectAll()
-                ->addParameter(ParticipantsTable::threadId, $threadId),
+            queryFactory: SqlQueryFactory::create(tableClass: ParticipantsTable::class)
+                ->addParameter(field: ParticipantsTable::threadId, value: $threadId),
             cacheBuilder: MessagingCacheFactory::threadParticipants($threadId),
         );
     }
@@ -37,10 +36,10 @@ class ParticipantIO extends AbstractMessagingIO
     ): void
     {
         $this->data->update(
-            queryFactory: SqlQueryFactory::create(ParticipantsTable::class)
+            queryFactory: SqlQueryFactory::create(tableClass: ParticipantsTable::class)
                 ->update()
-                ->addParameter(ParticipantsTable::threadId, $threadId)
-                ->addParameter(ParticipantsTable::isArchived, 0)
+                ->addParameter(field: ParticipantsTable::threadId, value: $threadId)
+                ->addParameter(field: ParticipantsTable::isArchived, value: 0)
         );
     }
 

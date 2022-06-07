@@ -24,7 +24,9 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
         $data = new Thread();
         $data->setId($threadId);
 
-        foreach ($this->objectFactory->create(ParticipantIO::class)?->byThreadId($threadId) as $participant) {
+        /** @var ThreadIO $threadIO */
+        $threadIO = $this->objectFactory->create(className: ParticipantIO::class);
+        foreach ($threadIO->readByThreadId($threadId) as $participant) {
             $user = new User();
             $user->setId($participant['userId']);
 
@@ -48,7 +50,9 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
         int $fromTime=null,
     ): array
     {
-        $data = $this->objectFactory->create(ThreadIO::class)->readByUserId($userId, $fromTime);
+        /** @var ThreadIO $threadIO */
+        $threadIO = $this->objectFactory->create(className: ThreadIO::class);
+        $data = $threadIO->readByUserId($userId, $fromTime);
 
         return $this->builder->buildResources(
             builderClass: ThreadBuilder::class,
@@ -67,7 +71,9 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
         int $userId2
     ): ResourceObject
     {
-        $data = $this->objectFactory->create(ThreadIO::class)->getDialogThread($userId1, $userId2);
+        /** @var ThreadIO $threadIO */
+        $threadIO = $this->objectFactory->create(className: ThreadIO::class);
+        $data = $threadIO->getDialogThread($userId1, $userId2);
 
         return $this->builder->buildResource(
             builderClass: ThreadBuilder::class,

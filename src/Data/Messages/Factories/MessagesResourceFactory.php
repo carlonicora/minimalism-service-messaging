@@ -22,9 +22,11 @@ class MessagesResourceFactory extends AbstractResourceFactory
         ?int $fromMessageId=null,
     ): array
     {
+        /** @var MessageIO $messageIO */
+        $messageIO = $this->objectFactory->create(className: MessageIO::class);
         return $this->builder->buildResources(
             builderClass: MessageBuilder::class,
-            data: $this->objectFactory->create(MessageIO::class)->readByThreadId($threadId, $userId, $fromMessageId),
+            data: $messageIO->byThreadId($threadId, $userId, $fromMessageId),
         );
     }
 
@@ -37,9 +39,11 @@ class MessagesResourceFactory extends AbstractResourceFactory
         int $messageId,
     ): ResourceObject
     {
+        /** @var MessageIO $messageIO */
+        $messageIO = $this->objectFactory->create(className: MessageIO::class);
         return $this->builder->buildResource(
             builderClass: MessageBuilder::class,
-            data: $this->objectFactory->create(MessageIO::class)->readByMessageId($messageId),
+            data: $messageIO->byMessageId($messageId),
         );
     }
 
@@ -54,9 +58,11 @@ class MessagesResourceFactory extends AbstractResourceFactory
         int $lastChecked,
     ): array
     {
+        /** @var MessageIO $messageIO */
+        $messageIO = $this->objectFactory->create(className: MessageIO::class);
         return $this->builder->buildResources(
             builderClass: MessageBuilder::class,
-            data: $this->objectFactory->create(MessageIO::class)->readNewByUserId($userId, $lastChecked),
+            data: $messageIO->newByUserId($userId, $lastChecked),
         );
     }
 }

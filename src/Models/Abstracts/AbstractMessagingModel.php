@@ -27,7 +27,7 @@ abstract class AbstractMessagingModel extends AbstractModel
     {
         parent::__construct($minimalismFactories, $function);
 
-        $this->security = $minimalismFactories->getServiceFactory()->create(SecurityInterface::class);
+        $this->security = $minimalismFactories->getServiceFactory()->create(className: SecurityInterface::class);
     }
 
     /**
@@ -39,7 +39,9 @@ abstract class AbstractMessagingModel extends AbstractModel
         int $threadId,
     ): Thread
     {
-        $response = $this->objectFactory->create(ThreadIO::class)->readByThreadId(
+        /** @var ThreadIO $threadIO */
+        $threadIO = $this->objectFactory->create(className: ThreadIO::class);
+        $response = $threadIO->readByThreadId(
             threadId: $threadId,
         );
 
@@ -72,7 +74,9 @@ abstract class AbstractMessagingModel extends AbstractModel
         int $threadId,
     ): void
     {
-        $participants = $this->objectFactory->create(ParticipantIO::class)->byThreadId($threadId);
+        /** @var ParticipantIO $participantIO */
+        $participantIO = $this->objectFactory->create(className: ParticipantIO::class);
+        $participants = $participantIO->byThreadId($threadId);
 
         foreach ($participants ?? [] as $participant){
             if ($this->security->getUserId() === $participant['userId']){

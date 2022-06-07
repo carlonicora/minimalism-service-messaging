@@ -102,7 +102,7 @@ class Messages extends AbstractMessagingModel
         /** @noinspection UnusedFunctionResultInspection */
         $this->validateThread($threadId->getValue());
 
-        $message = $this->objectFactory->create(MessageIO::class)->readByMessageId(
+        $message = $this->objectFactory->create(MessageIO::class)->byMessageId(
             messageId: $messageId->getValue(),
         );
 

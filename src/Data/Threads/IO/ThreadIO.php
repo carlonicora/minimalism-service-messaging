@@ -62,48 +62,48 @@ class ThreadIO extends AbstractMessagingIO
         ?int $fromTime=null
     ): array
     {
-        $queryFactory = SqlQueryFactory::create(ThreadsTable::class);
+        $queryFactory = SqlQueryFactory::create(tableClass: ThreadsTable::class);
         $threadsTable = $queryFactory->getTable();
-        $messagesTable = SqlQueryFactory::create(MessagesTable::class)->getTable();
-        $participantsTable = SqlQueryFactory::create(ParticipantsTable::class)->getTable();
+        $messagesTable = SqlQueryFactory::create(tableClass: MessagesTable::class)->getTable();
+        $participantsTable = SqlQueryFactory::create(tableClass: ParticipantsTable::class)->getTable();
 
         $sql ='SELECT '
-            . $threadsTable->getField(ThreadsTable::threadId)->getFullName() . ','
-            . $messagesTable->getField(MessagesTable::createdAt)->getFullName() . ','
-            . $messagesTable->getField(MessagesTable::content)->getFullName() . ','
+            . $threadsTable->getField(field: ThreadsTable::threadId)->getFullName() . ','
+            . $messagesTable->getField(field: MessagesTable::createdAt)->getFullName() . ','
+            . $messagesTable->getField(field: MessagesTable::content)->getFullName() . ','
             . ' count(msg.messageId) as unread'
             . ' FROM ' . $threadsTable->getFullName()
             . ' JOIN ' . $messagesTable->getFullName()
-            . ' ON ' . $messagesTable->getField(MessagesTable::messageId)->getFullName() . '='
+            . ' ON ' . $messagesTable->getField(field: MessagesTable::messageId)->getFullName() . '='
             . ' ('
             . '  SELECT'
-            . '  ' . $messagesTable->getField(MessagesTable::messageId)->getFullName()
+            . '  ' . $messagesTable->getField(field: MessagesTable::messageId)->getFullName()
             . '  FROM ' . $messagesTable->getFullName()
-            . '  WHERE ' . $messagesTable->getField(MessagesTable::threadId)->getFullName() . '='
-            . '  ' . $threadsTable->getField(ThreadsTable::threadId)->getFullName()
-            . '  ORDER BY ' . $messagesTable->getField(MessagesTable::createdAt)->getFullName() . ' DESC LIMIT 1'
+            . '  WHERE ' . $messagesTable->getField(field: MessagesTable::threadId)->getFullName() . '='
+            . '  ' . $threadsTable->getField(field: ThreadsTable::threadId)->getFullName()
+            . '  ORDER BY ' . $messagesTable->getField(field: MessagesTable::createdAt)->getFullName() . ' DESC LIMIT 1'
             . ' )'
             . ' JOIN ' . $participantsTable->getFullName()
-            . ' ON ' . $threadsTable->getField(ThreadsTable::threadId)->getFullName() . '=' . $participantsTable->getField(ParticipantsTable::threadId)->getFullName()
+            . ' ON ' . $threadsTable->getField(field: ThreadsTable::threadId)->getFullName() . '=' . $participantsTable->getField(field: ParticipantsTable::threadId)->getFullName()
             . ' AND msg.userId!=?'
-            . ' AND msg.createdAt>' . $participantsTable->getField(ParticipantsTable::lastActivity)->getFullName()
-            . ' WHERE ' . $participantsTable->getField(ParticipantsTable::userId)->getFullName() . '=?'
-            . ' AND ' . $participantsTable->getField(ParticipantsTable::isArchived)->getFullName() . '=?';
+            . ' AND msg.createdAt>' . $participantsTable->getField(field: ParticipantsTable::lastActivity)->getFullName()
+            . ' WHERE ' . $participantsTable->getField(field: ParticipantsTable::userId)->getFullName() . '=?'
+            . ' AND ' . $participantsTable->getField(field: ParticipantsTable::isArchived)->getFullName() . '=?';
         $queryFactory->addParameter(field: 'msg.userId', value: $userId, stringParameterType: FieldType::Integer)
-            ->addParameter(ParticipantsTable::userId, $userId)
-            ->addParameter(ParticipantsTable::isArchived, 0);
+            ->addParameter(field: ParticipantsTable::userId, value: $userId)
+            ->addParameter(field: ParticipantsTable::isArchived, value: 0);
 
 
         if ($fromTime !== null){
-            $sql .= ' AND ' . $messagesTable->getField(MessagesTable::createdAt)->getFullName() . '<?';
-            $queryFactory->addParameter(MessagesTable::createdAt, $fromTime,SqlComparison::LesserThan);
+            $sql .= ' AND ' . $messagesTable->getField(field: MessagesTable::createdAt)->getFullName() . '<?';
+            $queryFactory->addParameter(field: MessagesTable::createdAt, value: $fromTime, comparison: SqlComparison::LesserThan);
         }
 
         $sql .= ' GROUP BY '
-            . $threadsTable->getField(ThreadsTable::threadId)->getFullName() . ','
-            . $messagesTable->getField(MessagesTable::createdAt)->getFullName() . ','
-            . $messagesTable->getField(MessagesTable::content)->getFullName()
-            . ' ORDER BY ' . $messagesTable->getField(MessagesTable::createdAt)->getFullName() . ' DESC'
+            . $threadsTable->getField(field: ThreadsTable::threadId)->getFullName() . ','
+            . $messagesTable->getField(field: MessagesTable::createdAt)->getFullName() . ','
+            . $messagesTable->getField(field: MessagesTable::content)->getFullName()
+            . ' ORDER BY ' . $messagesTable->getField(field: MessagesTable::createdAt)->getFullName() . ' DESC'
             . ' LIMIT 0,25;';
 
         $queryFactory->setSql($sql);
@@ -122,33 +122,33 @@ class ThreadIO extends AbstractMessagingIO
         int $userId
     ): int
     {
-        $queryFactory = SqlQueryFactory::create(ThreadsTable::class);
+        $queryFactory = SqlQueryFactory::create(tableClass: ThreadsTable::class);
         $threadsTable = $queryFactory->getTable();
-        $messagesTable = SqlQueryFactory::create(MessagesTable::class)->getTable();
-        $participantsTable = SqlQueryFactory::create(ParticipantsTable::class)->getTable();
+        $messagesTable = SqlQueryFactory::create(tableClass: MessagesTable::class)->getTable();
+        $participantsTable = SqlQueryFactory::create(tableClass: ParticipantsTable::class)->getTable();
 
-        $sql = 'SELECT count(' . $threadsTable->getField(ThreadsTable::threadId)->getFullName() . ') as counter'
+        $sql = 'SELECT count(' . $threadsTable->getField(field: ThreadsTable::threadId)->getFullName() . ') as counter'
             . ' FROM ' . $threadsTable->getFullName()
             . ' JOIN ' . $participantsTable->getFullName()
-            . ' ON ' . $threadsTable->getField(ThreadsTable::threadId)->getFullName() . '=' . $participantsTable->getField(ParticipantsTable::threadId)->getFullName()
-            . ' AND ' . $participantsTable->getField(ParticipantsTable::userId)->getFullName() . '=?'
+            . ' ON ' . $threadsTable->getField(field: ThreadsTable::threadId)->getFullName() . '=' . $participantsTable->getField(field: ParticipantsTable::threadId)->getFullName()
+            . ' AND ' . $participantsTable->getField(field: ParticipantsTable::userId)->getFullName() . '=?'
             . ' JOIN ' . $messagesTable->getFullName()
-            . ' ON ' . $messagesTable->getField(MessagesTable::messageId)->getFullName() . '='
+            . ' ON ' . $messagesTable->getField(field: MessagesTable::messageId)->getFullName() . '='
             . ' ('
-            . '  SELECT ' . $messagesTable->getField(MessagesTable::messageId)->getFullName()
+            . '  SELECT ' . $messagesTable->getField(field: MessagesTable::messageId)->getFullName()
             . '  FROM ' . $messagesTable->getFullName()
-            . '  WHERE ' . $messagesTable->getField(MessagesTable::threadId)->getFullName() . '=' . $threadsTable->getField(ThreadsTable::threadId)->getFullName()
-            . '  ORDER BY ' . $messagesTable->getField(MessagesTable::createdAt)->getFullName() . ' DESC LIMIT 1'
+            . '  WHERE ' . $messagesTable->getField(field: MessagesTable::threadId)->getFullName() . '=' . $threadsTable->getField(field: ThreadsTable::threadId)->getFullName()
+            . '  ORDER BY ' . $messagesTable->getField(field: MessagesTable::createdAt)->getFullName() . ' DESC LIMIT 1'
             . ' )'
-            . ' WHERE ' . $messagesTable->getField(MessagesTable::createdAt)->getFullName() . '>=' . $participantsTable->getField(ParticipantsTable::lastActivity)->getFullName() . ';';
+            . ' WHERE ' . $messagesTable->getField(field: MessagesTable::createdAt)->getFullName() . '>=' . $participantsTable->getField(field: ParticipantsTable::lastActivity)->getFullName() . ';';
         $queryFactory->setSql($sql)
-            ->addParameter(ParticipantsTable::userId, $userId);
+            ->addParameter(field: ParticipantsTable::userId, value: $userId);
 
         $recordset = $this->data->read(
             queryFactory: $queryFactory
         );
 
-        if (array_key_exists(1, $recordset)){
+        if (array_key_exists(key: 1, array: $recordset)){
             throw new MinimalismException(status: HttpCode::InternalServerError, message: 'Error in count query');
         }
 
@@ -167,7 +167,7 @@ class ThreadIO extends AbstractMessagingIO
     ): Thread
     {
         $queryFactory = SqlQueryFactory::create(ThreadsTable::class)
-            ->setSql('SELECT'
+            ->setSql(sql: 'SELECT'
                 . ' participants.threadId'
                 . ' FROM participants '
                 . ' WHERE participants.threadId IN '
@@ -182,8 +182,8 @@ class ThreadIO extends AbstractMessagingIO
                 . ' )'
                 . ' GROUP BY participants.threadId '
                 . ' HAVING count(participants.userId)=2;')
-            ->addParameter(ParticipantsTable::userId, $userId1)
-            ->addParameter(ParticipantsTable::userId, $userId2);
+            ->addParameter(field: ParticipantsTable::userId, value: $userId1)
+            ->addParameter(field: ParticipantsTable::userId, value: $userId2);
 
         return $this->data->read(
             queryFactory: $queryFactory,
@@ -209,12 +209,12 @@ class ThreadIO extends AbstractMessagingIO
         $participants = [];
 
         foreach ($userIds as $userId){
-            $participants[] = SqlQueryFactory::create(ParticipantsTable::class)
+            $participants[] = SqlQueryFactory::create(tableClass: ParticipantsTable::class)
                 ->insert()
-                ->addParameter(ParticipantsTable::threadId, $thread->getId())
-                ->addParameter(ParticipantsTable::userId, $userId)
-                ->addParameter(ParticipantsTable::isArchived, 0)
-                ->addParameter(ParticipantsTable::lastActivity, time());
+                ->addParameter(field: ParticipantsTable::threadId, value: $thread->getId())
+                ->addParameter(field: ParticipantsTable::userId, value: $userId)
+                ->addParameter(field: ParticipantsTable::isArchived, value: 0)
+                ->addParameter(field: ParticipantsTable::lastActivity, value: time());
         }
 
         /** @noinspection UnusedFunctionResultInspection */
@@ -235,11 +235,11 @@ class ThreadIO extends AbstractMessagingIO
         int $userId
     ): void
     {
-        $queryFactory = SqlQueryFactory::create(ParticipantsTable::class)
+        $queryFactory = SqlQueryFactory::create(tableClass: ParticipantsTable::class)
             ->update()
-            ->addParameter(ParticipantsTable::threadId, $threadId)
-            ->addParameter(ParticipantsTable::userId, $userId)
-            ->addParameter(ParticipantsTable::isArchived, true);
+            ->addParameter(field: ParticipantsTable::threadId, value: $threadId)
+            ->addParameter(field: ParticipantsTable::userId, value: $userId)
+            ->addParameter(field: ParticipantsTable::isArchived, value: true);
 
         $this->data->update(
             queryFactory: $queryFactory,
@@ -256,11 +256,11 @@ class ThreadIO extends AbstractMessagingIO
         int $threadId,
     ): void
     {
-        $queryFactory = SqlQueryFactory::create(ParticipantsTable::class)
+        $queryFactory = SqlQueryFactory::create(tableClass: ParticipantsTable::class)
             ->update()
-            ->addParameter(ParticipantsTable::threadId, $threadId)
-            ->addParameter(ParticipantsTable::userId, $userId)
-            ->addParameter(ParticipantsTable::lastActivity, time());
+            ->addParameter(field: ParticipantsTable::threadId, value: $threadId)
+            ->addParameter(field: ParticipantsTable::userId, value: $userId)
+            ->addParameter(field: ParticipantsTable::lastActivity, value: time());
 
         $this->data->update(
             queryFactory: $queryFactory,
