@@ -1,23 +1,23 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases;
 
-use CarloNicora\Minimalism\Services\MySQL\Data\SqlField;
-use CarloNicora\Minimalism\Services\MySQL\Data\SqlTable;
-use CarloNicora\Minimalism\Services\MySQL\Enums\FieldOption;
-use CarloNicora\Minimalism\Services\MySQL\Enums\FieldType;
+use CarloNicora\Minimalism\Interfaces\Sql\Attributes\SqlFieldAttribute;
+use CarloNicora\Minimalism\Interfaces\Sql\Attributes\SqlTableAttribute;
+use CarloNicora\Minimalism\Interfaces\Sql\Enums\SqlFieldOption;
+use CarloNicora\Minimalism\Interfaces\Sql\Enums\SqlFieldType;
 
-#[SqlTable(name: 'participants', databaseIdentifier: 'Messaging')]
+#[SqlTableAttribute(name: 'participants', databaseIdentifier: 'Messaging')]
 enum ParticipantsTable
 {
-    #[SqlField(fieldType: FieldType::Integer,fieldOption: FieldOption::PrimaryKey)]
+    #[SqlFieldAttribute(fieldType: SqlFieldType::Integer,fieldOption: SqlFieldOption::PrimaryKey)]
     case threadId;
 
-    #[SqlField(fieldType: FieldType::Integer,fieldOption: FieldOption::PrimaryKey)]
+    #[SqlFieldAttribute(fieldType: SqlFieldType::Integer,fieldOption: SqlFieldOption::PrimaryKey)]
     case userId;
 
-    #[SqlField(fieldType: FieldType::Integer)]
+    #[SqlFieldAttribute(fieldType: SqlFieldType::Integer)]
     case isArchived;
 
-    #[SqlField(fieldOption: FieldOption::TimeUpdate)]
+    #[SqlFieldAttribute(fieldType: SqlFieldType::String, fieldOption: SqlFieldOption::TimeUpdate)]
     case lastActivity;
 }

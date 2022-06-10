@@ -6,8 +6,8 @@ use CarloNicora\Minimalism\Interfaces\Sql\Attributes\DbField;
 use CarloNicora\Minimalism\Interfaces\Sql\Attributes\DbTable;
 use CarloNicora\Minimalism\Interfaces\Sql\Enums\DbFieldType;
 use CarloNicora\Minimalism\Interfaces\Sql\Interfaces\SqlDataObjectInterface;
+use CarloNicora\Minimalism\Interfaces\Sql\Traits\SqlDataObjectTrait;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases\ParticipantsTable;
-use CarloNicora\Minimalism\Services\MySQL\Traits\SqlDataObjectTrait;
 
 #[DbTable(tableClass: ParticipantsTable::class)]
 class Participant implements SqlDataObjectInterface

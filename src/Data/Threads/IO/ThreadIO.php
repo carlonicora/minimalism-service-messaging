@@ -4,14 +4,14 @@ namespace CarloNicora\Minimalism\Services\Messaging\Data\Threads\IO;
 use CarloNicora\Minimalism\Enums\HttpCode;
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Sql\Enums\SqlComparison;
+use CarloNicora\Minimalism\Interfaces\Sql\Enums\SqlFieldType;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlJoinFactory;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingIO;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\Databases\MessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases\ParticipantsTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\Databases\ThreadsTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\DataObjects\Thread;
-use CarloNicora\Minimalism\Services\MySQL\Enums\FieldType;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlJoinFactory;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlQueryFactory;
 
 class ThreadIO extends AbstractMessagingIO
 {
@@ -45,7 +45,7 @@ class ThreadIO extends AbstractMessagingIO
         // We use this method in notifier
         return $this->data->read(
             queryFactory: SqlQueryFactory::create(tableClass: ThreadsTable::class)
-                ->addJoin(new SqlJoinFactory(primaryKey: ThreadsTable::threadId, foreignKey: MessagesTable::threadId))
+                ->addJoin(SqlJoinFactory::create(primaryKey: ThreadsTable::threadId, foreignKey: MessagesTable::threadId))
                 ->addParameter(field: MessagesTable::messageId, value: $messageId),
             responseType: Thread::class
         );
@@ -89,7 +89,7 @@ class ThreadIO extends AbstractMessagingIO
             . ' AND msg.createdAt>' . $participantsTable->getField(field: ParticipantsTable::lastActivity)->getFullName()
             . ' WHERE ' . $participantsTable->getField(field: ParticipantsTable::userId)->getFullName() . '=?'
             . ' AND ' . $participantsTable->getField(field: ParticipantsTable::isArchived)->getFullName() . '=?';
-        $queryFactory->addParameter(field: 'msg.userId', value: $userId, stringParameterType: FieldType::Integer)
+        $queryFactory->addParameter(field: 'msg.userId', value: $userId, stringParameterType: SqlFieldType::Integer)
             ->addParameter(field: ParticipantsTable::userId, value: $userId)
             ->addParameter(field: ParticipantsTable::isArchived, value: 0);
 

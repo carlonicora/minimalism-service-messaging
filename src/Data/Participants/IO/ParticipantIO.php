@@ -2,10 +2,10 @@
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Participants\IO;
 
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingIO;
 use CarloNicora\Minimalism\Services\Messaging\Data\Cache\MessagingCacheFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases\ParticipantsTable;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlQueryFactory;
 use JetBrains\PhpStorm\ArrayShape;
 
 class ParticipantIO extends AbstractMessagingIO

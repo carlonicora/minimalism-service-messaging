@@ -1,18 +1,18 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Cache;
 
-use CarloNicora\Minimalism\Services\Cacher\Builders\CacheBuilder;
-use CarloNicora\Minimalism\Services\Cacher\Factories\CacheBuilderFactory;
+use CarloNicora\Minimalism\Interfaces\Cache\Abstracts\AbstractCacheBuilderFactory;
+use CarloNicora\Minimalism\Interfaces\Cache\Interfaces\CacheBuilderInterface;
 
-class MessagingCacheFactory extends CacheBuilderFactory
+class MessagingCacheFactory extends AbstractCacheBuilderFactory
 {
     /**
      * @param int $threadId
-     * @return CacheBuilder
+     * @return CacheBuilderInterface
      */
     public static function thread(
         int $threadId,
-    ): CacheBuilder
+    ): CacheBuilderInterface
     {
         return self::create(
             cacheName: 'threadId',
@@ -22,11 +22,11 @@ class MessagingCacheFactory extends CacheBuilderFactory
 
     /**
      * @param int $threadId
-     * @return CacheBuilder
+     * @return CacheBuilderInterface
      */
     public static function threadParticipants(
         int $threadId
-    ): CacheBuilder
+    ): CacheBuilderInterface
     {
         return self::createList(
             listName: 'userId',

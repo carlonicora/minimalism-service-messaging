@@ -3,6 +3,8 @@ namespace CarloNicora\Minimalism\Services\Messaging\Data\Messages\IO;
 
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Sql\Enums\SqlComparison;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlJoinFactory;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingIO;
 use CarloNicora\Minimalism\Services\Messaging\Data\DeletedMessages\Databases\DeletedMessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\Databases\MessagesTable;
@@ -10,8 +12,6 @@ use CarloNicora\Minimalism\Services\Messaging\Data\Messages\DataObjects\Message;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases\ParticipantsTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\IO\ParticipantIO;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\Databases\ThreadsTable;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlQueryFactory;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlJoinFactory;
 use Exception;
 
 class MessageIO extends AbstractMessagingIO
@@ -101,8 +101,8 @@ class MessageIO extends AbstractMessagingIO
     ): array
     {
         $queryFactory = SqlQueryFactory::create(tableClass: MessagesTable::class)
-            ->addJoin(join: new SqlJoinFactory(primaryKey: MessagesTable::threadId, foreignKey: ThreadsTable::threadId))
-            ->addJoin(join: new SqlJoinFactory(primaryKey: ThreadsTable::threadId, foreignKey: ParticipantsTable::threadId))
+            ->addJoin(join: SqlJoinFactory::create(primaryKey: MessagesTable::threadId, foreignKey: ThreadsTable::threadId))
+            ->addJoin(join: SqlJoinFactory::create(primaryKey: ThreadsTable::threadId, foreignKey: ParticipantsTable::threadId))
             ->addParameter(field: ParticipantsTable::userId, value: $userId)
             ->addParameter(field: MessagesTable::userId, value: $userId, comparison: SqlComparison::NotEqual)
             ->addParameter(field: MessagesTable::createdAt, value: $lastChecked, comparison: SqlComparison::GreaterThan);
