@@ -16,7 +16,7 @@ class MessagesResourceFactory extends AbstractResourceFactory
      * @return array
      * @throws Exception
      */
-    public function readByThreadId(
+    public function byThreadId(
         int $threadId,
         int $userId,
         ?int $fromMessageId=null,
@@ -35,7 +35,7 @@ class MessagesResourceFactory extends AbstractResourceFactory
      * @return ResourceObject
      * @throws Exception
      */
-    public function readByMessageId(
+    public function byMessageId(
         int $messageId,
     ): ResourceObject
     {

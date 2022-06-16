@@ -26,7 +26,7 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
 
         /** @var ThreadIO $threadIO */
         $threadIO = $this->objectFactory->create(className: ParticipantIO::class);
-        foreach ($threadIO->readByThreadId($threadId) as $participant) {
+        foreach ($threadIO->byThreadId($threadId) as $participant) {
             $user = new User();
             $user->setId($participant['userId']);
 
@@ -52,7 +52,7 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
     {
         /** @var ThreadIO $threadIO */
         $threadIO = $this->objectFactory->create(className: ThreadIO::class);
-        $data = $threadIO->readByUserId($userId, $fromTime);
+        $data = $threadIO->byUserId($userId, $fromTime);
 
         return $this->builder->buildResources(
             builderClass: ThreadBuilder::class,

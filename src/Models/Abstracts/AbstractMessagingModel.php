@@ -41,7 +41,7 @@ abstract class AbstractMessagingModel extends AbstractModel
     {
         /** @var ThreadIO $threadIO */
         $threadIO = $this->objectFactory->create(className: ThreadIO::class);
-        $response = $threadIO->readByThreadId(
+        $response = $threadIO->byThreadId(
             threadId: $threadId,
         );
 

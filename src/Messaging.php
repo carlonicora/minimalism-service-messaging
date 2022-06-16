@@ -82,7 +82,7 @@ class Messaging extends AbstractService
         $response = new Document();
 
         $response->addResourceList(
-            resourceList: $this->objectFactory->create(className: MessagesResourceFactory::class)?->readByThreadId(
+            resourceList: $this->objectFactory->create(className: MessagesResourceFactory::class)?->byThreadId(
                 threadId: $threadId,
                 userId: $userId,
                 fromMessageId: $fromMessageId
@@ -104,7 +104,7 @@ class Messaging extends AbstractService
         $response = new Document();
 
         $response->addResource(
-            resource: $this->objectFactory->create(className: MessagesResourceFactory::class)?->readByMessageId(
+            resource: $this->objectFactory->create(className: MessagesResourceFactory::class)?->byMessageId(
                 messageId: $messageId
             ),
         );
@@ -169,7 +169,7 @@ class Messaging extends AbstractService
             message: $message,
         );
 
-        return $this->objectFactory->create(className: MessagesResourceFactory::class)?->readByMessageId($messageId);
+        return $this->objectFactory->create(className: MessagesResourceFactory::class)?->byMessageId($messageId);
     }
 
     /**
