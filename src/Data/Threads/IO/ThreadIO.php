@@ -55,7 +55,7 @@ class ThreadIO extends AbstractMessagingIO
     /**
      * @param int $userId
      * @param int|null $fromTime
-     * @return array
+     * @return Thread[]
      * @throws MinimalismException
      */
     public function byUserId(
@@ -89,7 +89,7 @@ class ThreadIO extends AbstractMessagingIO
             . ' ('
             . '  SELECT ' . $messagesMessageId
             . '  FROM ' . $messagesTable
-            . '  WHERE ' . $messagesThreadId . '=' . '  ' . $threadsThreadId
+            . '  WHERE ' . $messagesThreadId . '=' . $threadsThreadId
             . '  ORDER BY ' . $messagesCreatedAt . ' DESC'
             . '  LIMIT 1'
             . ' )'
@@ -116,6 +116,8 @@ class ThreadIO extends AbstractMessagingIO
 
         return $this->data->read(
             queryFactory: $queryFactory,
+            responseType: Thread::class,
+            requireObjectsList: true
         );
     }
 
