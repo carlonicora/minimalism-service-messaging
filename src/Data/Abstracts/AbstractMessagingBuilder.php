@@ -22,6 +22,5 @@ abstract class AbstractMessagingBuilder extends AbstractResourceBuilder
         protected Users                       $users,
     )
     {
-        parent::__construct($this->encrypter);
     }
 }
