@@ -154,8 +154,7 @@ class Messaging extends AbstractService
         string $content,
     ): ResourceObject
     {
-        $participants = $this->objectFactory->create(ParticipantIO::class)?->byThreadId($threadId);
-        $participantIds = array_column($participants, 'userId');
+        $participantIds = $this->objectFactory->create(ParticipantIO::class)?->participantIdsByThreadId($threadId);
         if (!in_array($userIdSender, $participantIds, true)) {
             throw new MinimalismException(status: HttpCode::Forbidden, message: 'User is not a thread participant');
         }

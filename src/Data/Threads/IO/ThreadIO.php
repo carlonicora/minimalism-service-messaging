@@ -22,7 +22,7 @@ class ThreadIO extends AbstractMessagingIO
      * @return Thread
      * @throws MinimalismException
      */
-    public function byThreadId(
+    public function byId(
         int $threadId
     ): Thread
     {

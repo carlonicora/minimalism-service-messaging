@@ -41,7 +41,7 @@ abstract class AbstractMessagingModel extends AbstractModel
     {
         /** @var ThreadIO $threadIO */
         $threadIO = $this->objectFactory->create(className: ThreadIO::class);
-        $response = $threadIO->byThreadId(
+        $response = $threadIO->byId(
             threadId: $threadId,
         );
 
@@ -76,12 +76,10 @@ abstract class AbstractMessagingModel extends AbstractModel
     {
         /** @var ParticipantIO $participantIO */
         $participantIO = $this->objectFactory->create(className: ParticipantIO::class);
-        $participants = $participantIO->byThreadId($threadId);
+        $participantIds = $participantIO->participantIdsByThreadId($threadId);
 
-        foreach ($participants ?? [] as $participant){
-            if ($this->security->getUserId() === $participant['userId']){
-                return;
-            }
+        if (in_array(needle: $this->security->getUserId(), haystack: $participantIds, strict: true)) {
+            return;
         }
 
         throw new MinimalismException(

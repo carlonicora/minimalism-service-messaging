@@ -6,8 +6,8 @@ use CarloNicora\JsonApi\Objects\Meta;
 use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingBuilder;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\DataObjects\Thread;
+use CarloNicora\Minimalism\Services\Messaging\Enums\MessagingDictionary;
 use CarloNicora\Minimalism\Services\ResourceBuilder\Interfaces\ResourceableDataInterface;
-use CarloNicora\Minimalism\Services\Users\Data\Dictionary\UsersDictionary;
 use Exception;
 
 /**
@@ -74,40 +74,34 @@ class ThreadBuilder extends AbstractMessagingBuilder
         ResourceableDataInterface $data
     ): ResourceObject
     {
+        $encryptedId = $this->encrypter->encryptId($data->getId());
+
         $response = new ResourceObject(
             type: 'thread',
-            id: $this->encrypter->encryptId($data->getId()),
+            id: $encryptedId,
         );
 
-        $response->attributes->add('lastMessageTime', $data->getLastMessageTime());
-        $response->attributes->add('lastMessage', $data->getLastMessage());
-        $response->attributes->add('unreadMessages', $data->getUnreadMessages());
+        $response->attributes->add(name: 'lastMessageTime', value: $data->getLastMessageTime());
+        $response->attributes->add(name: 'lastMessage', value: $data->getLastMessage());
+        $response->attributes->add(name: 'unreadMessages', value: $data->getUnreadMessages());
 
-        $response->links->add(
-            new Link(
-                name: 'self',
-                href: $this->path->getUrl()
-                    . 'threads/'
-                    . $this->encrypter->encryptId($data->getId())
-            )
-        );
+        $threadUrl = $this->path->getUrl() . MessagingDictionary::Thread->getEndpoint() . '/' . $encryptedId;
 
-        $response->links->add(
-            new Link(
-                name: 'archive',
-                href: $this->path->getUrl()
-                    . 'threads/'
-                    . $this->encrypter->encryptId($data->getId()),
-                meta: new Meta(['method'=>'DELETE'])
-            )
-        );
+        $response->links->add( new Link(
+            name: 'self',
+            href: $threadUrl
+        ));
 
-        $response->relationship(UsersDictionary::User->getPlural())->links->add(
-            link: new Link(
-                name: 'related',
-                href: $this->users->getUserUrlByIds($data->getUsers()),
-            )
-        );
+        $response->links->add(new Link(
+            name: 'archive',
+            href: $threadUrl,
+            meta: new Meta(['method'=>'DELETE'])
+        ));
+
+        $response->relationship(relationshipKey: 'participants')->links->add(new Link(
+            name: 'related',
+            href: $this->users->getUserUrlByIds($data->getUsers()),
+        ));
 
         return $response;
     }

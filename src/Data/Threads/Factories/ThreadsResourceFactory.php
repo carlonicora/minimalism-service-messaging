@@ -24,11 +24,11 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
         $data = new Thread();
         $data->setId($threadId);
 
-        /** @var ThreadIO $threadIO */
-        $threadIO = $this->objectFactory->create(className: ParticipantIO::class);
-        foreach ($threadIO->byThreadId($threadId) as $participant) {
+        /** @var ParticipantIO $participantIO */
+        $participantIO = $this->objectFactory->create(className: ParticipantIO::class);
+        foreach ($participantIO->participantIdsByThreadId($threadId) as $participantId) {
             $user = new User();
-            $user->setId($participant['userId']);
+            $user->setId($participantId);
 
             $data->addUser($user);
         }
@@ -47,12 +47,24 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
      */
     public function byUserId(
         int $userId,
-        int $fromTime=null,
+        int $fromTime = null,
     ): array
     {
         /** @var ThreadIO $threadIO */
         $threadIO = $this->objectFactory->create(className: ThreadIO::class);
-        $data = $threadIO->byUserId($userId, $fromTime);
+        $data     = $threadIO->byUserId($userId, $fromTime);
+
+        /** @var ParticipantIO $participantIO */
+        $participantIO = $this->objectFactory->create(className: ParticipantIO::class);
+
+        foreach ($data as $thread) {
+            foreach ($participantIO->participantIdsByThreadId($thread->getId()) as $participantId) {
+                $user = new User();
+                $user->setId($participantId);
+
+                $thread->addUser($user);
+            }
+        }
 
         return $this->builder->buildResources(
             builderClass: ThreadBuilder::class,
