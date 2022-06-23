@@ -1,4 +1,5 @@
 <?php
+
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Messages\Builders;
 
 use CarloNicora\JsonApi\Objects\Link;
@@ -70,36 +71,30 @@ class MessageBuilder extends AbstractMessagingBuilder
             id: $this->encrypter->encryptId($data->getId()),
         );
 
-        $response->attributes->add('createdAt', $data->getCreatedAt());
-        $response->attributes->add('content', $data->getContent());
-        $response->attributes->add('isUnread', $data->isUnread());
+        $response->attributes->add(name: 'createdAt', value: $data->getCreatedAt());
+        $response->attributes->add(name: 'content', value: $data->getContent());
+        $response->attributes->add(name: 'isUnread', value: $data->isUnread());
 
-        $response->links->add(
-            new Link(
-                'self',
-                $this->path->getUrl()
-                . 'messages/'
-                . $this->encrypter->encryptId($data['messageId'])
-            )
-        );
+        $response->links->add(new Link(
+            name: 'self',
+            href: $this->path->getUrl()
+            . 'messages/'
+            . $this->encrypter->encryptId($data->getId())
+        ));
 
-        $response->relationship('thread')->links->add(
-            new Link(
-                name: 'related',
-                href: $this->path->getUrl()
-                    . 'threads'
-                    . '/' . $this->encrypter->encryptId($data->getThreadId()),
-            )
-        );
+        $response->relationship(relationshipKey: 'thread')->links->add(new Link(
+            name: 'related',
+            href: $this->path->getUrl()
+            . 'threads'
+            . '/' . $this->encrypter->encryptId($data->getThreadId()),
+        ));
 
-        $response->relationship('author')->links->add(
-            new Link(
-                name: 'related',
-                href: $this->path->getUrl()
-                . 'users'
-                . '/' . $this->encrypter->encryptId($data->getUserId()),
-            )
-        );
+        $response->relationship(relationshipKey: 'author')->links->add(new Link(
+            name: 'related',
+            href: $this->path->getUrl()
+            . 'users'
+            . '/' . $this->encrypter->encryptId($data->getUserId()),
+        ));
 
         return $response;
     }

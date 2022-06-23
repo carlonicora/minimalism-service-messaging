@@ -7,10 +7,31 @@ use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingIO;
 use CarloNicora\Minimalism\Services\Messaging\Data\Cache\MessagingCacheFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases\ParticipantsTable;
+use CarloNicora\Minimalism\Services\Messaging\Data\Participants\DataObjects\Participant;
+use CarloNicora\Minimalism\Services\Messaging\Data\Threads\DataObjects\Thread;
 use JetBrains\PhpStorm\ArrayShape;
 
 class ParticipantIO extends AbstractMessagingIO
 {
+
+    /**
+     * @param int $threadId
+     * @return Participant[]
+     * @throws MinimalismException
+     */
+    public function byThreadId(
+        int $threadId
+    ): array
+    {
+        // We use it in Notifier
+        return $this->data->read(
+            queryFactory: SqlQueryFactory::create(tableClass: ParticipantsTable::class)
+                ->addParameter(field: ParticipantsTable::threadId, value: $threadId),
+            responseType: Thread::class,
+            requireObjectsList: true
+        );
+    }
+
     /**
      * @param int $threadId
      * @return int[]

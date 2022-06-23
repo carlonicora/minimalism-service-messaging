@@ -52,6 +52,7 @@ class MessageIO extends AbstractMessagingIO
 
         $sql = 'SELECT '
             . $messageTable->getField(field: MessagesTable::messageId)->getFullName() . ','
+            . $messageTable->getField(field: MessagesTable::threadId)->getFullName() . ','
             . $messageTable->getField(field: MessagesTable::userId)->getFullName() . ','
             . $messageTable->getField(field: MessagesTable::content)->getFullName() . ','
             . $messageTable->getField(field: MessagesTable::createdAt)->getFullName() . ','
@@ -68,9 +69,9 @@ class MessageIO extends AbstractMessagingIO
             . '  WHERE ' . $deletedMessagesTable->getField(field: DeletedMessagesTable::userId)->getFullName() . '=?'
             . ' )';
         $queryFactory->addParameter(field: ParticipantsTable::threadId, value: $threadId)
-        ->addParameter(field: ParticipantsTable::userId, value: $userId)
-        ->addParameter(field: MessagesTable::threadId, value: $threadId)
-        ->addParameter(field: DeletedMessagesTable::userId, value: $userId);
+            ->addParameter(field: ParticipantsTable::userId, value: $userId)
+            ->addParameter(field: MessagesTable::threadId, value: $threadId)
+            ->addParameter(field: DeletedMessagesTable::userId, value: $userId);
 
         if ($fromMessageId !== null){
             $sql .= ' AND ' . $messageTable->getField(field: MessagesTable::messageId)->getFullName() . '<?';
