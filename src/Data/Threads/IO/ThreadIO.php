@@ -271,7 +271,7 @@ class ThreadIO extends AbstractMessagingIO
             ->update()
             ->addParameter(field: ParticipantsTable::threadId, value: $threadId)
             ->addParameter(field: ParticipantsTable::userId, value: $userId)
-            ->addParameter(field: ParticipantsTable::lastActivity, value: time());
+            ->addParameter(field: ParticipantsTable::lastActivity, value: date(format: 'Y-m-d H:i:s'));
 
         $this->data->update(
             queryFactory: $queryFactory,
