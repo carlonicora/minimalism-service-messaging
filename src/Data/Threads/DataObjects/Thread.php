@@ -29,7 +29,7 @@ class Thread implements SqlDataObjectInterface, ResourceableDataInterface
     private ?string $unread=null;
 
     /** @var User[]  */
-    private array $users=[];
+    private array $participants=[];
 
     /** @return int */
     public function getId(): int{return $this->id;}
@@ -47,11 +47,11 @@ class Thread implements SqlDataObjectInterface, ResourceableDataInterface
     public function getUnreadMessages(): ?string {return $this->unread;}
 
     /** @return User[] */
-    public function getUsers(): array{return $this->users;}
+    public function getParticipants(): array{return $this->participants;}
 
     /** @param User[] $users */
-    public function setUsers(array $users): void{$this->users = $users;}
+    public function setParticipants(array $users): void{$this->participants = $users;}
 
     /** @param User $user */
-    public function addUser(User $user): void{$this->users[] = $user;}
+    public function addParticipant(User $user): void{$this->participants[] = $user;}
 }

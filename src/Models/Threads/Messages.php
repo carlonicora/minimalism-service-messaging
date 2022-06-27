@@ -1,13 +1,18 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Messaging\Models\Threads;
 
+use CarloNicora\JsonApi\Objects\Link;
 use CarloNicora\Minimalism\Enums\HttpCode;
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Encrypter\Parameters\PositionedEncryptedParameter;
 use CarloNicora\Minimalism\Interfaces\Security\Interfaces\SecurityInterface;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\IO\MessageIO;
+use CarloNicora\Minimalism\Services\Messaging\Data\Participants\IO\ParticipantIO;
 use CarloNicora\Minimalism\Services\Messaging\Messaging;
 use CarloNicora\Minimalism\Services\Messaging\Models\Abstracts\AbstractMessagingModel;
+use CarloNicora\Minimalism\Services\Path;
+use CarloNicora\Minimalism\Services\Users\Data\Users\DataObjects\User;
+use CarloNicora\Minimalism\Services\Users\Users;
 use Exception;
 
 class Messages extends AbstractMessagingModel
@@ -15,15 +20,18 @@ class Messages extends AbstractMessagingModel
     /**
      * @param SecurityInterface $security
      * @param Messaging $messaging
+     * @param Users $userService
      * @param PositionedEncryptedParameter $threadId
      * @param PositionedEncryptedParameter|null $fromMessage
      * @return HttpCode
+     * @throws MinimalismException
      * @throws Exception
      */
     public function get(
-        SecurityInterface $security,
-        Messaging $messaging,
-        PositionedEncryptedParameter $threadId,
+        SecurityInterface             $security,
+        Messaging                     $messaging,
+        Users                         $userService,
+        PositionedEncryptedParameter  $threadId,
         ?PositionedEncryptedParameter $fromMessage = null
     ): HttpCode
     {
@@ -36,12 +44,25 @@ class Messages extends AbstractMessagingModel
             fromMessageId: $fromMessage?->getValue()
         );
 
+        /** @var ParticipantIO $participantIO */
+        $participantIO = $this->objectFactory->create(className: ParticipantIO::class);
+        $participants = [];
+        foreach ($participantIO->participantIdsByThreadId($threadId->getValue()) as $participantId) {
+            $participant = new User();
+            $participant->setId($participantId);
+
+            $participants []= $participant;
+        }
+
+        $this->document->links->add(new Link(
+            name: 'participants',
+            href: $userService->getUserUrlByIds($participants),
+        ));
+
         $messaging->markThreadAsRead(
             userId: $security->getUserId(),
             threadId: $threadId->getValue(),
         );
-
-        $this->document->forceResourceList();
 
         return HttpCode::Ok;
     }

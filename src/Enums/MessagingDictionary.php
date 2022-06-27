@@ -3,12 +3,14 @@ namespace CarloNicora\Minimalism\Services\Messaging\Enums;
 
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\Databases\MessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\Databases\ThreadsTable;
+use LogicException;
 
 enum MessagingDictionary: string
 {
     case Message='message';
     case Thread='thread';
     case Author='author';
+    case Participants = 'participant';
 
     /**
      * @return string
@@ -17,9 +19,10 @@ enum MessagingDictionary: string
     ): string
     {
         return match ($this) {
-            self::Message => 'messages',
-            self::Thread => 'threads',
-            self::Author => 'users',
+            self::Message      => 'messages',
+            self::Thread       => 'threads',
+            self::Author       => 'users',
+            self::Participants => 'participants',
         };
     }
 

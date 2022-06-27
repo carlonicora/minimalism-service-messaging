@@ -100,7 +100,12 @@ class ThreadBuilder extends AbstractMessagingBuilder
 
         $response->relationship(relationshipKey: 'participants')->links->add(new Link(
             name: 'related',
-            href: $this->users->getUserUrlByIds($data->getUsers()),
+            href: $this->users->getUserUrlByIds($data->getParticipants()),
+        ));
+
+        $response->relationship(relationshipKey: 'messages')->links->add(new Link(
+            name: 'related',
+            href: $threadUrl . '/' . MessagingDictionary::Message->getEndpoint()
         ));
 
         return $response;

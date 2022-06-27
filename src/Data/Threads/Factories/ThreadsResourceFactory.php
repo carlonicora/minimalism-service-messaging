@@ -30,7 +30,7 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
             $user = new User();
             $user->setId($participantId);
 
-            $data->addUser($user);
+            $data->addParticipant($user);
         }
 
         return $this->builder->buildResource(
@@ -62,7 +62,7 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
                 $user = new User();
                 $user->setId($participantId);
 
-                $thread->addUser($user);
+                $thread->addParticipant($user);
             }
         }
 
