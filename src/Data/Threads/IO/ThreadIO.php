@@ -215,6 +215,7 @@ class ThreadIO extends AbstractMessagingIO
         /** @var Thread $thread */
         $thread = $this->data->create(
             queryFactory: $thread,
+            responseType: Thread::class
         );
 
         $participants = [];
