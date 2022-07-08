@@ -226,7 +226,7 @@ class ThreadIO extends AbstractMessagingIO
                 ->addParameter(field: ParticipantsTable::threadId, value: $thread->getId())
                 ->addParameter(field: ParticipantsTable::userId, value: $userId)
                 ->addParameter(field: ParticipantsTable::isArchived, value: 0)
-                ->addParameter(field: ParticipantsTable::lastActivity, value: time());
+                ->addParameter(field: ParticipantsTable::lastActivity, value: date(format: 'Y-m-d H:i:s'));
         }
 
         /** @noinspection UnusedFunctionResultInspection */

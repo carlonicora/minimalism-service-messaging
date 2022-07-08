@@ -28,7 +28,7 @@ class Participant implements SqlDataObjectInterface
 
     /** @var int|null */
     #[DbField(fieldType: DbFieldType::IntDateTime)]
-    private int|null $lastActivity = null;
+    private ?int $lastActivity = null;
 
     /**
      * @return int
@@ -81,7 +81,7 @@ class Participant implements SqlDataObjectInterface
     /**
      * @return int|null
      */
-    public function getLastActivity(): int|null
+    public function getLastActivity(): ?int
     {
         return $this->lastActivity;
     }
