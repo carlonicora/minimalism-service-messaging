@@ -1,4 +1,5 @@
 <?php
+
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Abstracts;
 
 use CarloNicora\Minimalism\Factories\ObjectFactory;
@@ -16,10 +17,10 @@ abstract class AbstractMessagingBuilder extends AbstractResourceBuilder
      * @param Users $users
      */
     public function __construct(
-        protected ObjectFactory               $objectFactory,
-        protected Path                        $path,
+        protected readonly ObjectFactory      $objectFactory,
+        protected readonly Path               $path,
         protected readonly EncrypterInterface $encrypter,
-        protected Users                       $users,
+        protected readonly Users              $users,
     )
     {
     }

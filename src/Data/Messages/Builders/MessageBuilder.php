@@ -4,9 +4,13 @@ namespace CarloNicora\Minimalism\Services\Messaging\Data\Messages\Builders;
 
 use CarloNicora\JsonApi\Objects\Link;
 use CarloNicora\JsonApi\Objects\ResourceObject;
+use CarloNicora\Minimalism\Interfaces\Encrypter\Interfaces\EncrypterInterface;
 use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingBuilder;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\DataObjects\Message;
+use CarloNicora\Minimalism\Services\Messaging\Enums\MessagingDictionary;
+use CarloNicora\Minimalism\Services\Path;
 use CarloNicora\Minimalism\Services\ResourceBuilder\Interfaces\ResourceableDataInterface;
+use CarloNicora\Minimalism\Services\Users\Users;
 use Exception;
 
 /**
@@ -57,6 +61,20 @@ use Exception;
  */
 class MessageBuilder extends AbstractMessagingBuilder
 {
+
+    /**
+     * @param Path $path
+     * @param EncrypterInterface $encrypter
+     * @param Users $users
+     */
+    public function __construct(
+        protected readonly Path               $path,
+        protected readonly EncrypterInterface $encrypter,
+        protected readonly Users              $users
+    )
+    {
+    }
+
     /**
      * @param Message $data
      * @return ResourceObject
@@ -71,31 +89,34 @@ class MessageBuilder extends AbstractMessagingBuilder
             id: $this->encrypter->encryptId($data->getId()),
         );
 
+        // Attributes
+
         $response->attributes->add(name: 'createdAt', value: $data->getCreatedAt());
         $response->attributes->add(name: 'content', value: $data->getContent());
         $response->attributes->add(name: 'isUnread', value: $data->isUnread());
 
+        // Links
+
         $response->links->add(new Link(
             name: 'self',
-            href: $this->path->getUrl()
-            . 'messages/'
-            . $this->encrypter->encryptId($data->getId())
+            href: $this->path->getUrl() . MessagingDictionary::Message->getEndpoint()
+            . '/' . $this->encrypter->encryptId($data->getId())
         ));
+
+        // Relationships
 
         $response->relationship(relationshipKey: 'thread')->links->add(new Link(
             name: 'related',
-            href: $this->path->getUrl()
-            . 'threads'
+            href: $this->path->getUrl() . MessagingDictionary::Thread->getEndpoint()
             . '/' . $this->encrypter->encryptId($data->getThreadId()),
         ));
 
         $response->relationship(relationshipKey: 'author')->links->add(new Link(
             name: 'related',
-            href: $this->path->getUrl()
-            . 'users'
-            . '/' . $this->encrypter->encryptId($data->getUserId()),
+            href: $this->users->getUserUrlById($data->getUserId())
         ));
 
         return $response;
     }
+
 }

@@ -132,7 +132,7 @@ class MessageIO extends AbstractMessagingIO
 
         $this->objectFactory->create(className: ParticipantIO::class)->unarchiveThread($message->getThreadId());
 
-        return $newMessage['messageId'];
+        return $newMessage->getId();
     }
 
     /**

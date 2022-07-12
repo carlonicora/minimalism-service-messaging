@@ -8,7 +8,6 @@ use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingIO
 use CarloNicora\Minimalism\Services\Messaging\Data\Cache\MessagingCacheFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases\ParticipantsTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\DataObjects\Participant;
-use CarloNicora\Minimalism\Services\Messaging\Data\Threads\DataObjects\Thread;
 use JetBrains\PhpStorm\ArrayShape;
 
 class ParticipantIO extends AbstractMessagingIO
@@ -27,7 +26,7 @@ class ParticipantIO extends AbstractMessagingIO
         return $this->data->read(
             queryFactory: SqlQueryFactory::create(tableClass: ParticipantsTable::class)
                 ->addParameter(field: ParticipantsTable::threadId, value: $threadId),
-            responseType: Thread::class,
+            responseType: Participant::class,
             requireObjectsList: true
         );
     }

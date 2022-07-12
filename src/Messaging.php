@@ -182,7 +182,7 @@ class Messaging extends AbstractService
     ): void
     {
         $message = $this->objectFactory->create(className: MessageIO::class)?->byMessageId($messageId);
-        if ($message['userId'] !== $userId) {
+        if ($message->getUserId() !== $userId) {
             throw new MinimalismException(status: HttpCode::Forbidden, message: 'The current user has no access to a message');
         }
 

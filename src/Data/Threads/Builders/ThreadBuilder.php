@@ -81,9 +81,13 @@ class ThreadBuilder extends AbstractMessagingBuilder
             id: $encryptedId,
         );
 
+        // Attributes
+
         $response->attributes->add(name: 'lastMessageTime', value: $data->getLastMessageTime());
         $response->attributes->add(name: 'lastMessage', value: $data->getLastMessage());
         $response->attributes->add(name: 'unreadMessages', value: $data->getUnreadMessages());
+
+        // Links
 
         $threadUrl = $this->path->getUrl() . MessagingDictionary::Thread->getEndpoint() . '/' . $encryptedId;
 
@@ -97,6 +101,8 @@ class ThreadBuilder extends AbstractMessagingBuilder
             href: $threadUrl,
             meta: new Meta(['method'=>'DELETE'])
         ));
+
+        // Relationships
 
         $response->relationship(relationshipKey: 'participants')->links->add(new Link(
             name: 'related',

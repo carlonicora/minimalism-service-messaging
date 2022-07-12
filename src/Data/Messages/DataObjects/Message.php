@@ -35,8 +35,9 @@ class Message implements SqlDataObjectInterface, ResourceableDataInterface
     #[DbField(fieldType: DbFieldType::IntDateTime)]
     private int $createdAt;
 
+    /** @var bool|null */
     #[DbField]
-    private bool $unread = false;
+    private ?bool $unread = null;
 
     /** @return int */
     public function getId(): int
@@ -97,8 +98,10 @@ class Message implements SqlDataObjectInterface, ResourceableDataInterface
         $this->createdAt = $createdAt;
     }
 
-    /** @return bool */
-    public function isUnread(): bool
+    /**
+     * @return bool|null
+     */
+    public function isUnread(): ?bool
     {
         return $this->unread;
     }
