@@ -77,7 +77,7 @@ class ThreadBuilder extends AbstractMessagingBuilder
         $encryptedId = $this->encrypter->encryptId($data->getId());
 
         $response = new ResourceObject(
-            type: 'thread',
+            type: MessagingDictionary::Thread->getResourceName(),
             id: $encryptedId,
         );
 

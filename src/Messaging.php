@@ -126,6 +126,7 @@ class Messaging extends AbstractService
     ): ResourceObject
     {
         $userIds[] = $userIdSender;
+        $userIds = array_unique($userIds);
 
         $threadId = $this->objectFactory->create(className: ThreadIO::class)?->insert(
             userIds: $userIds

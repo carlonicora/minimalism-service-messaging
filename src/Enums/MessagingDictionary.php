@@ -15,6 +15,14 @@ enum MessagingDictionary: string
     /**
      * @return string
      */
+    public function getResourceName(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string
+     */
     public function getEndpoint(
     ): string
     {

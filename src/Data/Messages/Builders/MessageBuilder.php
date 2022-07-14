@@ -85,7 +85,7 @@ class MessageBuilder extends AbstractMessagingBuilder
     ): ResourceObject
     {
         $response = new ResourceObject(
-            type: 'message',
+            type: MessagingDictionary::Message->getResourceName(),
             id: $this->encrypter->encryptId($data->getId()),
         );
 

@@ -147,9 +147,9 @@ class MessageIO extends AbstractMessagingIO
     ): void
     {
         /** @noinspection UnusedFunctionResultInspection */
-        $this->data->create(
+        $this->data->delete(
             queryFactory: SqlQueryFactory::create(DeletedMessagesTable::class)
-                ->insert()
+                ->delete()
                 ->addParameter(field: DeletedMessagesTable::userId, value: $userId)
                 ->addParameter(field: DeletedMessagesTable::messageId, value: $messageId),
         );
