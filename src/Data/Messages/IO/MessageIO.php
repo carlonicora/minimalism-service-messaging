@@ -3,8 +3,10 @@ namespace CarloNicora\Minimalism\Services\Messaging\Data\Messages\IO;
 
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Sql\Enums\SqlComparison;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlFieldFactory;
 use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlJoinFactory;
 use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlTableFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingIO;
 use CarloNicora\Minimalism\Services\Messaging\Data\DeletedMessages\Databases\DeletedMessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\Databases\MessagesTable;
@@ -40,45 +42,52 @@ class MessageIO extends AbstractMessagingIO
      * @throws MinimalismException
      */
     public function byThreadId(
-        int $threadId,
-        int $userId,
-        ?int $fromMessageId=null
+        int  $threadId,
+        int  $userId,
+        ?int $fromMessageId = null
     ): array
     {
         $queryFactory = SqlQueryFactory::create(tableClass: MessagesTable::class);
-        $messageTable = $queryFactory->getTable();
-        $participantsTable = SqlQueryFactory::create(tableClass: ParticipantsTable::class)->getTable();
-        $deletedMessagesTable = SqlQueryFactory::create(tableClass: DeletedMessagesTable::class)->getTable();
 
-        $sql = 'SELECT '
-            . $messageTable->getField(field: MessagesTable::messageId)->getFullName() . ','
-            . $messageTable->getField(field: MessagesTable::threadId)->getFullName() . ','
-            . $messageTable->getField(field: MessagesTable::userId)->getFullName() . ','
-            . $messageTable->getField(field: MessagesTable::content)->getFullName() . ','
-            . $messageTable->getField(field: MessagesTable::createdAt)->getFullName() . ','
-            . ' IF(' . $messageTable->getField(field: MessagesTable::createdAt)->getFullName() . '>=' .  $participantsTable->getField(ParticipantsTable::lastActivity)->getFullName() . ', 1, 0) as unread'
-            . ' FROM ' . $messageTable->getFullName()
-            . ' JOIN ' . $participantsTable->getFullName()
-            . ' ON ' . $participantsTable->getField(field: ParticipantsTable::threadId)->getFullName() . '=?'
-            . ' AND ' . $participantsTable->getField(field: ParticipantsTable::userId)->getFullName() . '=?'
-            . ' WHERE ' . $messageTable->getField(field: MessagesTable::threadId)->getFullName() . '=?'
-            . ' AND ' . $messageTable->getField(field: MessagesTable::messageId)->getFullName()
-            . ' NOT IN ('
-            . '  SELECT ' . $deletedMessagesTable->getField(field: DeletedMessagesTable::messageId)->getFullName()
-            . '  FROM ' . $deletedMessagesTable->getFullName()
-            . '  WHERE ' . $deletedMessagesTable->getField(field: DeletedMessagesTable::userId)->getFullName() . '=?'
-            . ' )';
+        $messages          = SqlTableFactory::create(tableClass: MessagesTable::class)->getFullName();
+        $messagesMessageId = SqlFieldFactory::create(field: MessagesTable::messageId)->getFullName();
+        $messagesThreadId  = SqlFieldFactory::create(field: MessagesTable::threadId)->getFullName();
+        $messagesUserId    = SqlFieldFactory::create(field: MessagesTable::userId)->getFullName();
+        $messagesContent   = SqlFieldFactory::create(field: MessagesTable::content)->getFullName();
+        $messagesCreatedAt = SqlFieldFactory::create(field: MessagesTable::createdAt)->getFullName();
+
+        $participants             = SqlTableFactory::create(tableClass: ParticipantsTable::class)->getFullName();
+        $participantsLastActivity = SqlFieldFactory::create(field: ParticipantsTable::lastActivity)->getFullName();
+        $participantsThreadId     = SqlFieldFactory::create(field: ParticipantsTable::threadId)->getFullName();
+        $participantsUserId       = SqlFieldFactory::create(field: ParticipantsTable::userId)->getFullName();
+
+        $deletedMessages          = SqlTableFactory::create(tableClass: DeletedMessagesTable::class)->getFullName();
+        $deletedMessagesMessageId = SqlFieldFactory::create(field: DeletedMessagesTable::messageId)->getFullName();
+        $deletedMessagesUserId    = SqlFieldFactory::create(field: DeletedMessagesTable::userId)->getFullName();
+
+        $sql = 'SELECT ' . $messagesMessageId . ',' . $messagesThreadId . ',' . $messagesUserId . ',' . $messagesContent . ',' . $messagesCreatedAt . ','
+            . '   IF(' . $messagesCreatedAt . '>=' . $participantsLastActivity . ', 1, 0) as unread'
+            . ' FROM ' . $messages
+            . '   JOIN ' . $participants . ' ON ' . $participantsThreadId . '=?' . ' AND ' . $participantsUserId . '=?'
+            . ' WHERE ' . $messagesThreadId . '=?'
+            . '   AND ' . $messagesMessageId
+            . '     NOT IN ('
+            . '       SELECT ' . $deletedMessagesMessageId
+            . '       FROM ' . $deletedMessages
+            . '       WHERE ' . $deletedMessagesUserId . '=?'
+            . '     )';
+
         $queryFactory->addParameter(field: ParticipantsTable::threadId, value: $threadId)
             ->addParameter(field: ParticipantsTable::userId, value: $userId)
             ->addParameter(field: MessagesTable::threadId, value: $threadId)
             ->addParameter(field: DeletedMessagesTable::userId, value: $userId);
 
-        if ($fromMessageId !== null){
-            $sql .= ' AND ' . $messageTable->getField(field: MessagesTable::messageId)->getFullName() . '<?';
-            $queryFactory->addParameter(field: MessagesTable::messageId, value: $fromMessageId,comparison: SqlComparison::LesserThan);
+        if ($fromMessageId !== null) {
+            $sql .= ' AND ' . $messagesMessageId . '<?';
+            $queryFactory->addParameter(field: MessagesTable::messageId, value: $fromMessageId, comparison: SqlComparison::LesserThan);
         }
 
-        $sql .= ' ORDER BY ' . $messageTable->getField(field: MessagesTable::createdAt)->getFullName() . ' DESC'
+        $sql .= ' ORDER BY ' . $messagesCreatedAt . ' DESC'
             . ' LIMIT 0,25;';
 
         $queryFactory->setSql($sql);
@@ -113,6 +122,55 @@ class MessageIO extends AbstractMessagingIO
             responseType: Message::class,
             requireObjectsList: true,
         );
+    }
+
+    /**
+     * @param $userId
+     * @return bool
+     * @throws MinimalismException
+     */
+    public function doesUserHasUnreadMessages(
+        $userId
+    ): bool
+    {
+        $messages = SqlTableFactory::create(tableClass: MessagesTable::class)->getFullName();
+        $messagesMessageId = SqlFieldFactory::create(field: MessagesTable::messageId)->getFullName();
+        $messagesUserId = SqlFieldFactory::create(field: MessagesTable::userId)->getFullName();
+        $messagesThreadId = SqlFieldFactory::create(field: MessagesTable::threadId)->getFullName();
+        $messagesCreatedAt = SqlFieldFactory::create(field: MessagesTable::createdAt)->getFullName();
+
+        $participants = SqlTableFactory::create(tableClass: ParticipantsTable::class)->getFullName();
+        $participantsThreadId = SqlFieldFactory::create(field: ParticipantsTable::threadId)->getFullName();
+        $participantsUserId = SqlFieldFactory::create(field: ParticipantsTable::userId)->getFullName();
+        $participantsLastActivity = SqlFieldFactory::create(field: ParticipantsTable::lastActivity)->getFullName();
+        $participantIsArchived = SqlFieldFactory::create(field: ParticipantsTable::isArchived)->getFullName();
+
+        $deletedMessages = SqlTableFactory::create(tableClass: DeletedMessagesTable::class)->getFullName();
+        $deletedMessagesMessageId = SqlFieldFactory::create(DeletedMessagesTable::messageId)->getFullName();
+        $deletedMessagesUserId = SqlFieldFactory::create(DeletedMessagesTable::userId)->getFullName();
+
+        $sql = ' SELECT ' . $messagesMessageId
+            . ' FROM ' . $messages
+            . ' JOIN ' . $participants . ' ON ' . $participantsThreadId . '=' . $messagesThreadId
+            . ' WHERE ' . $participantsUserId . '=?'
+            . '   AND ' . $participantIsArchived . '=0'
+            . '   AND ' . $messagesUserId . '!=?'
+            . '   AND ' . $messagesCreatedAt . '>=' . $participantsLastActivity
+            . '   AND ' . $messagesMessageId . ' NOT IN ('
+            . '     SELECT ' . $deletedMessagesMessageId
+            . '     FROM ' . $deletedMessages
+            . '     WHERE ' . $deletedMessagesUserId . '=' . $messagesUserId
+            . '   )'
+            . ' LIMIT 0,1';
+
+        $result = $this->data->read(
+            queryFactory: SqlQueryFactory::create(tableClass: MessagesTable::class)
+                ->setSql($sql)
+                ->addParameter(field: ParticipantsTable::userId, value: $userId)
+                ->addParameter(field: MessagesTable::userId, value: $userId),
+        );
+
+        return ! empty($result);
     }
 
     /**
