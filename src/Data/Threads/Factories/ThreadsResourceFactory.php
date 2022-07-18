@@ -57,7 +57,7 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
     {
         /** @var ThreadIO $threadIO */
         $threadIO = $this->objectFactory->create(className: ThreadIO::class);
-        $data     = $threadIO->byUserId(userId: $userId, limit: $limit, fromTime: $fromTime);
+        $data     = $threadIO->byUserId(userId: $userId, limit: $limit, fromTime: date(format: 'Y-m-d H:i:s', timestamp: $fromTime));
 
         /** @var ParticipantIO $participantIO */
         $participantIO = $this->objectFactory->create(className: ParticipantIO::class);
