@@ -8,6 +8,7 @@ use CarloNicora\Minimalism\Interfaces\Sql\Enums\SqlFieldType;
 use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlFieldFactory;
 use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlJoinFactory;
 use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlTableFactory;
 use CarloNicora\Minimalism\Services\Messaging\Data\Abstracts\AbstractMessagingIO;
 use CarloNicora\Minimalism\Services\Messaging\Data\Messages\Databases\MessagesTable;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\Databases\ParticipantsTable;
@@ -54,17 +55,20 @@ class ThreadIO extends AbstractMessagingIO
 
     /**
      * @param int $userId
+     * @param int $limit
      * @param int|null $fromTime
      * @return Thread[]
      * @throws MinimalismException
      */
     public function byUserId(
         int $userId,
-        ?int $fromTime=null
+        int $limit,
+        ?int $fromTime=null,
     ): array
     {
         $queryFactory    = SqlQueryFactory::create(tableClass: ThreadsTable::class);
-        $threadsTable    = $queryFactory->getTable()->getFullName();
+
+        $threadsTable    = SqlTableFactory::create(tableClass: ThreadsTable::class)->getFullName();
         $threadsThreadId = SqlFieldFactory::create(field: ThreadsTable::threadId)->getFullName();
 
         $messagesTable     = SqlQueryFactory::create(tableClass: MessagesTable::class)->getTable()->getFullName();
@@ -110,7 +114,7 @@ class ThreadIO extends AbstractMessagingIO
 
         $sql .= ' GROUP BY ' . $threadsThreadId . ',' . $messagesCreatedAt . ',' . $messagesContent
             . ' ORDER BY ' . $messagesCreatedAt . ' DESC'
-            . ' LIMIT 0,25;';
+            . ' LIMIT 0,' . $limit .';';
 
         $queryFactory->setSql($sql);
 

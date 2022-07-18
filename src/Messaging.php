@@ -51,17 +51,20 @@ class Messaging extends AbstractService
 
     /**
      * @param int $userId
+     * @param int|null $limit
      * @param int|null $fromTime
      * @return ResourceObject[]
      * @throws Exception
      */
     public function getThreadsList(
         int $userId,
-        int $fromTime=null,
+        ?int $limit = null,
+        ?int $fromTime=null,
     ): array
     {
         return $this->objectFactory->create(className: ThreadsResourceFactory::class)?->byUserId(
             userId: $userId,
+            limit: $limit ?? 25,
             fromTime: $fromTime
         );
     }

@@ -13,13 +13,16 @@ class Threads extends AbstractMessagingModel
 {
     /**
      * @param Messaging $messaging
+     * @param int|null $length
      * @param int|null $fromTime
      * @return HttpCode
+     * @throws MinimalismException
      * @throws Exception
      */
     public function get(
         Messaging $messaging,
-        ?int $fromTime = null
+        ?int      $length = null,
+        ?int      $fromTime = null
     ): HttpCode
     {
         $this->requireValidUser();
@@ -27,6 +30,7 @@ class Threads extends AbstractMessagingModel
         $this->document->addResourceList(
             resourceList: $messaging->getThreadsList(
                 userId: $this->security->getUserId(),
+                limit: $length,
                 fromTime: $fromTime,
             ),
         );

@@ -1,7 +1,9 @@
 <?php
+
 namespace CarloNicora\Minimalism\Services\Messaging\Data\Threads\Factories;
 
 use CarloNicora\JsonApi\Objects\ResourceObject;
+use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Services\Messaging\Data\Participants\IO\ParticipantIO;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\Builders\ThreadBuilder;
 use CarloNicora\Minimalism\Services\Messaging\Data\Threads\DataObjects\Thread;
@@ -41,18 +43,21 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
 
     /**
      * @param int $userId
+     * @param int $limit
      * @param int|null $fromTime
      * @return ResourceObject[]
+     * @throws MinimalismException
      * @throws Exception
      */
     public function byUserId(
         int $userId,
+        int $limit,
         int $fromTime = null,
     ): array
     {
         /** @var ThreadIO $threadIO */
         $threadIO = $this->objectFactory->create(className: ThreadIO::class);
-        $data     = $threadIO->byUserId($userId, $fromTime);
+        $data     = $threadIO->byUserId(userId: $userId, limit: $limit, fromTime: $fromTime);
 
         /** @var ParticipantIO $participantIO */
         $participantIO = $this->objectFactory->create(className: ParticipantIO::class);
@@ -85,7 +90,7 @@ class ThreadsResourceFactory extends AbstractUserResourceFactory
     {
         /** @var ThreadIO $threadIO */
         $threadIO = $this->objectFactory->create(className: ThreadIO::class);
-        $data = $threadIO->getDialogThread($userId1, $userId2);
+        $data     = $threadIO->getDialogThread($userId1, $userId2);
 
         return $this->builder->buildResource(
             builderClass: ThreadBuilder::class,
