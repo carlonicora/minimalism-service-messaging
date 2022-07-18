@@ -56,14 +56,14 @@ class ThreadIO extends AbstractMessagingIO
     /**
      * @param int $userId
      * @param int $limit
-     * @param int|null $fromTime
+     * @param string|null $fromTime
      * @return Thread[]
      * @throws MinimalismException
      */
     public function byUserId(
         int $userId,
         int $limit,
-        ?int $fromTime=null,
+        ?string $fromTime=null,
     ): array
     {
         $queryFactory    = SqlQueryFactory::create(tableClass: ThreadsTable::class);
